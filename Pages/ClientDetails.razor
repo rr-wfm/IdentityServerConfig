@@ -1,0 +1,120 @@
+﻿@page "/clients/{ClientId:int}"
+@inject ConfigurationDbContext DbContext;
+
+@if (SelectedClient == null)
+{
+    <p class="placeholder-glow">
+        <span class="placeholder col-12"></span>
+    </p>
+}
+else
+{
+    <div class="row">
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="clientId" class="form-label">Client Id</label>
+                <input type="text" class="form-control" id="clientId" value="@SelectedClient.ClientId" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="clientName" class="form-label">Client Name</label>
+                <input type="text" class="form-control" id="clientName" value="@SelectedClient.ClientName" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="protocolType" class="form-label">Protocol Type</label>
+                <input type="text" class="form-control" id="protocolType" value="@SelectedClient.ProtocolType" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" rows="3">@SelectedClient.Description</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="clientUri" class="form-label">Uri</label>
+                <input type="text" class="form-control" id="clientUri" value="@SelectedClient.ClientUri" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="logoUri" class="form-label">Logo</label>
+                <input type="text" class="form-control" id="logoUri" value="@SelectedClient.LogoUri" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Redirect Uri's</label>
+                @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())
+                {
+                    <input type="text" readonly class="form-control-plaintext" value="@redirectUri.RedirectUri">
+                }
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Post Logout Redirect Uri's</label>
+                @foreach (var redirectUri in SelectedClient.PostLogoutRedirectUris ?? Enumerable.Empty<ClientPostLogoutRedirectUri>())
+                {
+                    <input type="text" readonly class="form-control-plaintext" value="@redirectUri.PostLogoutRedirectUri">
+                }
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Allowed Grant Types</label>
+                @foreach (var grantType in SelectedClient.AllowedGrantTypes ?? Enumerable.Empty<ClientGrantType>())
+                {
+                    <input type="text" readonly class="form-control-plaintext" value="@grantType.GrantType">
+                }
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="mb-3 form-check form-switch">
+                <label for="enabled" class="form-label">Enabled</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="enabled" checked="@SelectedClient.Enabled" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="requireClientSecret" class="form-label">Require Client Secret</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="requireClientSecret" checked="@SelectedClient.RequireClientSecret" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="requireConsent" class="form-label">Require Consent</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="requireConsent" checked="@SelectedClient.RequireConsent" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="allowRememberConsent" class="form-label">Allow Remember Consent</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="allowRememberConsent" checked="@SelectedClient.AllowRememberConsent" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="requirePkce" class="form-label">Require PKCE</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="requirePkce" checked="@SelectedClient.RequirePkce" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="allowPlaintextPkce" class="form-label">Allow plain text PKCE</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="allowPlaintextPkce" checked="@SelectedClient.AllowPlainTextPkce" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="requireRequestObject" class="form-label">Require Request Object</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="requireRequestObject" checked="@SelectedClient.RequireRequestObject" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="allowAccessTokensViaBrowser" class="form-label">Allow access tokens via browser</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="allowAccessTokensViaBrowser" checked="@SelectedClient.AllowAccessTokensViaBrowser" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Client Secrets</label>
+                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
+                    <PropertyColumn Property="@(s => s.Description)" />
+                    <PropertyColumn Property="@(s => s.Type)" />
+                    <PropertyColumn Property="@(s => s.Created)" />
+                    <PropertyColumn Property="@(s => s.Expiration)" />
+                </QuickGrid>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int ClientId { get; set; }
+
+    public Client? SelectedClient { get; private set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        SelectedClient = await DbContext.Clients.Include(c => c.RedirectUris)
+                                                .Include(c => c.PostLogoutRedirectUris)
+                                                .Include(c => c.AllowedGrantTypes)
+                                                .Include(c => c.ClientSecrets)
+                                                .FirstOrDefaultAsync(c => c.Id == ClientId);
+    }
+}

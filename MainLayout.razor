@@ -1,0 +1,26 @@
+﻿@inherits LayoutComponentBase
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">IdentityServerConfig</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mg-lg-0">
+                        <li class="nav-item">
+                            <NavLink class="nav-link align-middle px-0" href="clients">
+                                <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Clients</span>
+                            </NavLink>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="col py-3">
+        <main> @Body </main>
+    </div>
+</div>
