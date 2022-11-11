@@ -9,4 +9,12 @@ In order to build and run this repository you'll need to have the following:
 
 - Visual Studio or Visual Studio Code (with the C# extension)
 - .NET 7 SDK installed
-- A database server with some existing IdentityServer configuration
+- A database server with some existing IdentityServer configuration (only SQL Server is supported at this time)
+
+Before running locally you'll need to setup the connection string using [.NET's user secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows) feature:
+
+```bash
+dotnet user-secrets set ConnectionStrings:Configuration <your-connection-string>
+```
+
+By default it is assumed that IdentityServer configuration is stored in the `Configuration` schema within the database, but this can be configured by setting the `ConfigurationSchema` configuration setting in `appsettings.Development.json`

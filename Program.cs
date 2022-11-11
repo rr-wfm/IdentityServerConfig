@@ -7,9 +7,9 @@ builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddIdentityServer()
                 .AddConfigurationStore(options =>
                 {
-                    options.DefaultSchema = "Configuration";
+                    options.DefaultSchema = builder.Configuration.GetValue("ConfigurationSchema", "Configuration");
                     options.ConfigureDbContext = b =>
-                        b.UseSqlServer("Data Source=.;Initial Catalog=Identity;Integrated Security=True;Encrypt=false");
+                        b.UseSqlServer(builder.Configuration.GetConnectionString("Configuration"));
                 });
 
 var app = builder.Build();
