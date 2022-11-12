@@ -1,0 +1,73 @@
+﻿@page "/api-resources/{ApiResourceId:int}"
+@inject ConfigurationDbContext DbContext;
+
+@if (SelectedApiResource == null)
+{
+    <p class="placeholder-glow">
+        <span class="placeholder col-12"></span>
+    </p>
+}
+else
+{
+    <div class="row">
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="apiResourceName" class="form-label">API Resource Name</label>
+                <input type="text" class="form-control" id="apiResourceName" value="@SelectedApiResource.Name" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="apiResourceDisplayName" class="form-label">API Resource Display Name</label>
+                <input type="text" class="form-control" id="apiResourceDisplayName" value="@SelectedApiResource.DisplayName" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" rows="3">@SelectedApiResource.Description</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="allowedAccessTokenSigningAlgorithms" class="form-label">Allowed Access Token Signature Algorithms</label>
+                <input type="text" class="form-control" id="allowedAccessTokenSigningAlgorithms" value="@SelectedApiResource.AllowedAccessTokenSigningAlgorithms" readonly>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="mb-3 form-check form-switch">
+                <label for="enabled" class="form-label">Enabled</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="enabled" checked="@SelectedApiResource.Enabled" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="showInDiscoveryDocument" class="form-label">Show in Discovery document</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="showInDiscoveryDocument" checked="@SelectedApiResource.ShowInDiscoveryDocument" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="requireResourceIndicator" class="form-label">Require resource indicator</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="requireResourceIndicator" checked="@SelectedApiResource.RequireResourceIndicator" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="nonEditable" class="form-label">Non-editable</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="nonEditable" checked="@SelectedApiResource.NonEditable" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Secrets</label>
+                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table">
+                    <PropertyColumn Property="@(s => s.Description)" />
+                    <PropertyColumn Property="@(s => s.Type)" />
+                    <PropertyColumn Property="@(s => s.Created)" />
+                    <PropertyColumn Property="@(s => s.Expiration)" />
+                </QuickGrid>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int ApiResourceId { get; set; }
+
+    public ApiResource? SelectedApiResource { get; private set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        SelectedApiResource = await DbContext.ApiResources.Include(c => c.Secrets)
+                                                          .FirstOrDefaultAsync(c => c.Id == ApiResourceId);
+    }
+}
+
