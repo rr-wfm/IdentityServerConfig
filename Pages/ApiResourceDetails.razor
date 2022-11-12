@@ -13,10 +13,7 @@ else
         <div class="col-6">
             <TextField Entity="@SelectedApiResource" Property="a => a.Name" DisplayName="Name" />
             <TextField Entity="@SelectedApiResource" Property="a => a.DisplayName" DisplayName="Display Name" />
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" rows="3">@SelectedApiResource.Description</textarea>
-            </div>
+            <TextAreaField Entity="@SelectedApiResource" Property="c => c.Description" DisplayName="Description" />
             <TextField Entity="@SelectedApiResource" Property="a => a.AllowedAccessTokenSigningAlgorithms" DisplayName="Allowed Access Token Signature Algorithms" />
         </div>
         <div class="col-4">
