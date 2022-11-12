@@ -47,11 +47,18 @@ else
             </div>
             <div class="mb-3">
                 <label class="form-label">Secrets</label>
-                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table">
+                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table table-hover table-striped">
                     <PropertyColumn Property="@(s => s.Description)" />
                     <PropertyColumn Property="@(s => s.Type)" />
                     <PropertyColumn Property="@(s => s.Created)" />
                     <PropertyColumn Property="@(s => s.Expiration)" />
+                </QuickGrid>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Properties</label>
+                <QuickGrid Items="@SelectedApiResource.Properties.AsQueryable()" Class="table table-hover table-striped">
+                    <PropertyColumn Property="@(s => s.Key)" />
+                    <PropertyColumn Property="@(s => s.Value)" />
                 </QuickGrid>
             </div>
         </div>
@@ -66,8 +73,9 @@ else
 
     protected async override Task OnParametersSetAsync()
     {
-        SelectedApiResource = await DbContext.ApiResources.Include(c => c.Secrets)
-                                                          .FirstOrDefaultAsync(c => c.Id == ApiResourceId);
+        SelectedApiResource = await DbContext.ApiResources.Include(a => a.Secrets)
+                                                          .Include(a => a.Properties)
+                                                          .FirstOrDefaultAsync(a => a.Id == ApiResourceId);
     }
 }
 

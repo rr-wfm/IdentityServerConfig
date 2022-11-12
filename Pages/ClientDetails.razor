@@ -75,6 +75,18 @@ else
                 <input type="checkbox" class="form-check-input" role="switch" id="allowRememberConsent" checked="@SelectedClient.AllowRememberConsent" disabled>
             </div>
             <div class="mb-3 form-check form-switch">
+                <label for="alwaysIncludeUserClaimsInIdToken" class="form-label">Always Include User Claims in Id Token</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="alwaysIncludeUserClaimsInIdToken" checked="@SelectedClient.AlwaysIncludeUserClaimsInIdToken" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="FrontChannelLogoutSessionRequired" class="form-label">Front Channel Logout Session Required</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="frontChannelLogoutSessionRequired" checked="@SelectedClient.FrontChannelLogoutSessionRequired" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
+                <label for="backChannelLogoutSessionRequired" class="form-label">Back Channel Logout Session Required</label>
+                <input type="checkbox" class="form-check-input" role="switch" id="backChannelLogoutSessionRequired" checked="@SelectedClient.BackChannelLogoutSessionRequired" disabled>
+            </div>
+            <div class="mb-3 form-check form-switch">
                 <label for="requirePkce" class="form-label">Require PKCE</label>
                 <input type="checkbox" class="form-check-input" role="switch" id="requirePkce" checked="@SelectedClient.RequirePkce" disabled>
             </div>
@@ -103,6 +115,13 @@ else
                     <PropertyColumn Property="@(s => s.Expiration)" />
                 </QuickGrid>
             </div>
+            <div class="mb-3">
+                <label class="form-label">Properties</label>
+                <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped">
+                    <PropertyColumn Property="@(s => s.Key)" />
+                    <PropertyColumn Property="@(s => s.Value)" />
+                </QuickGrid>
+            </div>
         </div>
     </div>
 }
@@ -119,6 +138,7 @@ else
                                                 .Include(c => c.PostLogoutRedirectUris)
                                                 .Include(c => c.AllowedGrantTypes)
                                                 .Include(c => c.ClientSecrets)
+                                                .Include(c => c.Properties)
                                                 .FirstOrDefaultAsync(c => c.Id == ClientId);
     }
 }
