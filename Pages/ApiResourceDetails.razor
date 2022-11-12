@@ -11,31 +11,19 @@ else
 {
     <div class="row">
         <div class="col-6">
-            <TextField Entity="@SelectedApiResource" Property="@(a => a.Name)" DisplayName="Name" />
-            <TextField Entity="@SelectedApiResource" Property="@(a => a.DisplayName)" DisplayName="Display Name" />
+            <TextField Entity="@SelectedApiResource" Property="a => a.Name" DisplayName="Name" />
+            <TextField Entity="@SelectedApiResource" Property="a => a.DisplayName" DisplayName="Display Name" />
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" rows="3">@SelectedApiResource.Description</textarea>
             </div>
-            <TextField Entity="@SelectedApiResource" Property="@(a => a.AllowedAccessTokenSigningAlgorithms)" DisplayName="Allowed Access Token Signature Algorithms" />
+            <TextField Entity="@SelectedApiResource" Property="a => a.AllowedAccessTokenSigningAlgorithms" DisplayName="Allowed Access Token Signature Algorithms" />
         </div>
         <div class="col-4">
-            <div class="mb-3 form-check form-switch">
-                <label for="enabled" class="form-label">Enabled</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="enabled" checked="@SelectedApiResource.Enabled" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="showInDiscoveryDocument" class="form-label">Show in Discovery document</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="showInDiscoveryDocument" checked="@SelectedApiResource.ShowInDiscoveryDocument" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="requireResourceIndicator" class="form-label">Require resource indicator</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="requireResourceIndicator" checked="@SelectedApiResource.RequireResourceIndicator" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="nonEditable" class="form-label">Non-editable</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="nonEditable" checked="@SelectedApiResource.NonEditable" disabled>
-            </div>
+            <SwitchField Entity="@SelectedApiResource" Property="a => a.Enabled" DisplayName="Enabled" />
+            <SwitchField Entity="@SelectedApiResource" Property="a => a.ShowInDiscoveryDocument" DisplayName="Show in Discovery document" />
+            <SwitchField Entity="@SelectedApiResource" Property="a => a.RequireResourceIndicator" DisplayName="Require resource indicator" />
+            <SwitchField Entity="@SelectedApiResource" Property="a => a.NonEditable" DisplayName="Non-editable" />
             <div class="mb-3">
                 <label class="form-label">Secrets</label>
                 <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table table-hover table-striped">

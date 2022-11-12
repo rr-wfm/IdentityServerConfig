@@ -2,8 +2,8 @@
 @inject ConfigurationDbContext DbContext;
 
 <QuickGrid Items="@DbContext.Clients" Class="table table-hover table-striped">
-    <PropertyColumn Property="@(c => c.ClientName)" Title="Client Name" />
-    <PropertyColumn Property="@(c => c.ClientId)" Title="Client Id" />
+    <PropertyColumn Property="c => c.ClientName" Title="Client Name" />
+    <PropertyColumn Property="c => c.ClientId" Title="Client Id" />
     <TemplateColumn Title="Protocol Type">
         <span class="badge bg-primary">@context.ProtocolType</span>
     </TemplateColumn>

@@ -11,15 +11,15 @@ else
 {
     <div class="row">
         <div class="col-6">
-            <TextField Entity="@SelectedClient" Property="@(c => c.ClientId)" DisplayName="Client Id" />
-            <TextField Entity="@SelectedClient" Property="@(c => c.ClientName)" DisplayName="Client Name" />
-            <TextField Entity="@SelectedClient" Property="@(c => c.ProtocolType)" DisplayName="Protocol Type" />
+            <TextField Entity="@SelectedClient" Property="c => c.ClientId" DisplayName="Client Id" />
+            <TextField Entity="@SelectedClient" Property="c => c.ClientName" DisplayName="Client Name" />
+            <TextField Entity="@SelectedClient" Property="c => c.ProtocolType" DisplayName="Protocol Type" />
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" rows="3">@SelectedClient.Description</textarea>
             </div>
-            <TextField Entity="@SelectedClient" Property="@(c => c.ClientUri)" DisplayName="Client Uri" />
-            <TextField Entity="@SelectedClient" Property="@(c => c.LogoUri)" DisplayName="Logo Uri" />
+            <TextField Entity="@SelectedClient" Property="c => c.ClientUri" DisplayName="Client Uri" />
+            <TextField Entity="@SelectedClient" Property="c => c.LogoUri" DisplayName="Logo Uri" />
             <div class="mb-3">
                 <label class="form-label">Redirect Uri's</label>
                 @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())
@@ -43,54 +43,18 @@ else
             </div>
         </div>
         <div class="col-4">
-            <div class="mb-3 form-check form-switch">
-                <label for="enabled" class="form-label">Enabled</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="enabled" checked="@SelectedClient.Enabled" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="requireClientSecret" class="form-label">Require Client Secret</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="requireClientSecret" checked="@SelectedClient.RequireClientSecret" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="requireConsent" class="form-label">Require Consent</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="requireConsent" checked="@SelectedClient.RequireConsent" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="allowRememberConsent" class="form-label">Allow Remember Consent</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="allowRememberConsent" checked="@SelectedClient.AllowRememberConsent" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="alwaysIncludeUserClaimsInIdToken" class="form-label">Always Include User Claims in Id Token</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="alwaysIncludeUserClaimsInIdToken" checked="@SelectedClient.AlwaysIncludeUserClaimsInIdToken" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="FrontChannelLogoutSessionRequired" class="form-label">Front Channel Logout Session Required</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="frontChannelLogoutSessionRequired" checked="@SelectedClient.FrontChannelLogoutSessionRequired" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="backChannelLogoutSessionRequired" class="form-label">Back Channel Logout Session Required</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="backChannelLogoutSessionRequired" checked="@SelectedClient.BackChannelLogoutSessionRequired" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="requirePkce" class="form-label">Require PKCE</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="requirePkce" checked="@SelectedClient.RequirePkce" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="allowPlaintextPkce" class="form-label">Allow plain text PKCE</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="allowPlaintextPkce" checked="@SelectedClient.AllowPlainTextPkce" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="requireRequestObject" class="form-label">Require Request Object</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="requireRequestObject" checked="@SelectedClient.RequireRequestObject" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="allowAccessTokensViaBrowser" class="form-label">Allow access tokens via browser</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="allowAccessTokensViaBrowser" checked="@SelectedClient.AllowAccessTokensViaBrowser" disabled>
-            </div>
-            <div class="mb-3 form-check form-switch">
-                <label for="nonEditable" class="form-label">Non-editable</label>
-                <input type="checkbox" class="form-check-input" role="switch" id="nonEditable" checked="@SelectedClient.NonEditable" disabled>
-            </div>
+            <SwitchField Entity="@SelectedClient" Property="c => c.Enabled" DisplayName="Enabled" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.RequireClientSecret" DisplayName="Require Client Secret" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.RequireConsent" DisplayName="Require Consent" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.AllowRememberConsent" DisplayName="Allow Remember Consent" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.AlwaysIncludeUserClaimsInIdToken" DisplayName="Always Include User Claims in Id Token" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.FrontChannelLogoutSessionRequired" DisplayName="Front Channel Logout Session Required" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.BackChannelLogoutSessionRequired" DisplayName="Back Channel Logout Session Required" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.RequirePkce" DisplayName="Require PKCE" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.AllowPlainTextPkce" DisplayName="Allow plain text PKCE" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.RequireRequestObject" DisplayName="Require Request Object" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.AllowAccessTokensViaBrowser" DisplayName="Allow access tokens via browser" />
+            <SwitchField Entity="@SelectedClient" Property="c => c.NonEditable" DisplayName="Non-editable" />
             <div class="mb-3">
                 <label class="form-label">Client Secrets</label>
                 <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
