@@ -11,30 +11,15 @@ else
 {
     <div class="row">
         <div class="col-6">
-            <div class="mb-3">
-                <label for="clientId" class="form-label">Client Id</label>
-                <input type="text" class="form-control" id="clientId" value="@SelectedClient.ClientId" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="clientName" class="form-label">Client Name</label>
-                <input type="text" class="form-control" id="clientName" value="@SelectedClient.ClientName" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="protocolType" class="form-label">Protocol Type</label>
-                <input type="text" class="form-control" id="protocolType" value="@SelectedClient.ProtocolType" readonly>
-            </div>
+            <TextField Entity="@SelectedClient" Property="@(c => c.ClientId)" DisplayName="Client Id" />
+            <TextField Entity="@SelectedClient" Property="@(c => c.ClientName)" DisplayName="Client Name" />
+            <TextField Entity="@SelectedClient" Property="@(c => c.ProtocolType)" DisplayName="Protocol Type" />
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" rows="3">@SelectedClient.Description</textarea>
             </div>
-            <div class="mb-3">
-                <label for="clientUri" class="form-label">Uri</label>
-                <input type="text" class="form-control" id="clientUri" value="@SelectedClient.ClientUri" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="logoUri" class="form-label">Logo</label>
-                <input type="text" class="form-control" id="logoUri" value="@SelectedClient.LogoUri" readonly>
-            </div>
+            <TextField Entity="@SelectedClient" Property="@(c => c.ClientUri)" DisplayName="Client Uri" />
+            <TextField Entity="@SelectedClient" Property="@(c => c.LogoUri)" DisplayName="Logo Uri" />
             <div class="mb-3">
                 <label class="form-label">Redirect Uri's</label>
                 @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())

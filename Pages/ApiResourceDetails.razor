@@ -11,22 +11,13 @@ else
 {
     <div class="row">
         <div class="col-6">
-            <div class="mb-3">
-                <label for="apiResourceName" class="form-label">API Resource Name</label>
-                <input type="text" class="form-control" id="apiResourceName" value="@SelectedApiResource.Name" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="apiResourceDisplayName" class="form-label">API Resource Display Name</label>
-                <input type="text" class="form-control" id="apiResourceDisplayName" value="@SelectedApiResource.DisplayName" readonly>
-            </div>
+            <TextField Entity="@SelectedApiResource" Property="@(a => a.Name)" DisplayName="Name" />
+            <TextField Entity="@SelectedApiResource" Property="@(a => a.DisplayName)" DisplayName="Display Name" />
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" rows="3">@SelectedApiResource.Description</textarea>
             </div>
-            <div class="mb-3">
-                <label for="allowedAccessTokenSigningAlgorithms" class="form-label">Allowed Access Token Signature Algorithms</label>
-                <input type="text" class="form-control" id="allowedAccessTokenSigningAlgorithms" value="@SelectedApiResource.AllowedAccessTokenSigningAlgorithms" readonly>
-            </div>
+            <TextField Entity="@SelectedApiResource" Property="@(a => a.AllowedAccessTokenSigningAlgorithms)" DisplayName="Allowed Access Token Signature Algorithms" />
         </div>
         <div class="col-4">
             <div class="mb-3 form-check form-switch">

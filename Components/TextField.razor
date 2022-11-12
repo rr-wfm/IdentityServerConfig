@@ -1,0 +1,38 @@
+﻿@using System.Linq.Expressions;
+@typeparam TEntity;
+@typeparam TProp;
+
+<div class="mb-3">
+    <label for="@_propertyName" class="form-label">@DisplayName</label>
+    <input type="text" class="form-control" id="@_propertyName" value="@_propertyValue" readonly>
+</div>
+
+@code {
+    private Expression<Func<TEntity, TProp>>? _lastAssignedProperty;
+    private string? _propertyName;
+    private string? _propertyValue;
+
+    [Parameter, EditorRequired]
+    public TEntity Entity { get; set; } = default!;
+
+    [Parameter, EditorRequired] public Expression<Func<TEntity, TProp>> Property { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string DisplayName { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        if (_lastAssignedProperty != Property)
+        {
+            _lastAssignedProperty = Property;
+            var compiledPropertyExpression = Property.Compile();
+
+            if (Property.Body is MemberExpression memberExpression)
+            {
+                _propertyName = memberExpression.Member.Name;
+            }
+
+            _propertyValue = compiledPropertyExpression.Invoke(Entity)?.ToString();
+        }
+    }
+}
