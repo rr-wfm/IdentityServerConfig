@@ -40,7 +40,9 @@ else
         <div class="tab-pane fade show" id="secrets-tab-pane" role="tabpanel" aria-labelledby="secrets-tab" tabindex="1">
             <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table">
                 <PropertyColumn Property="@(s => s.Description)" />
-                <PropertyColumn Property="@(s => s.Type)" />
+                <TemplateColumn Title="Type">
+                    <span class="badge bg-primary">@context.Type</span>
+                </TemplateColumn>
                 <PropertyColumn Property="@(s => s.Created)" />
                 <PropertyColumn Property="@(s => s.Expiration)" />
             </QuickGrid>
