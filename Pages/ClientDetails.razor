@@ -9,65 +9,78 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-6">
-            <TextField Entity="@SelectedClient" Property="c => c.ClientId" DisplayName="Client Id" />
-            <TextField Entity="@SelectedClient" Property="c => c.ClientName" DisplayName="Client Name" />
-            <TextField Entity="@SelectedClient" Property="c => c.ProtocolType" DisplayName="Protocol Type" />
-            <TextAreaField Entity="@SelectedClient" Property="c => c.Description" DisplayName="Description" />
-            <TextField Entity="@SelectedClient" Property="c => c.ClientUri" DisplayName="Client Uri" />
-            <TextField Entity="@SelectedClient" Property="c => c.LogoUri" DisplayName="Logo Uri" />
-            <div class="mb-3">
-                <label class="form-label">Redirect Uri's</label>
-                @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())
-                {
-                    <input type="text" readonly class="form-control-plaintext" value="@redirectUri.RedirectUri">
-                }
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Post Logout Redirect Uri's</label>
-                @foreach (var redirectUri in SelectedClient.PostLogoutRedirectUris ?? Enumerable.Empty<ClientPostLogoutRedirectUri>())
-                {
-                    <input type="text" readonly class="form-control-plaintext" value="@redirectUri.PostLogoutRedirectUri">
-                }
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Allowed Grant Types</label>
-                @foreach (var grantType in SelectedClient.AllowedGrantTypes ?? Enumerable.Empty<ClientGrantType>())
-                {
-                    <input type="text" readonly class="form-control-plaintext" value="@grantType.GrantType">
-                }
+    <ul class="nav nav-tabs mb-3" id="clientTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general-tab-pane" type="button" role="tab" aria-controls="general-tab-pane" aria-selected="true">General</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="secrets-tab" data-bs-toggle="tab" data-bs-target="#secrets-tab-pane" type="button" role="tab" aria-controls="secrets-tab-pane">Secrets</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="properties-tab" data-bs-toggle="tab" data-bs-target="#properties-tab-pane" type="button" role="tab" aria-controls="properties-tab-pane">Properties</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="clientTabsContent">
+        <div class="tab-pane fade show active" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
+            <div class="row">
+                <div class="col-6">
+                    <TextField Entity="@SelectedClient" Property="c => c.ClientId" DisplayName="Client Id" />
+                    <TextField Entity="@SelectedClient" Property="c => c.ClientName" DisplayName="Client Name" />
+                    <TextField Entity="@SelectedClient" Property="c => c.ProtocolType" DisplayName="Protocol Type" />
+                    <TextAreaField Entity="@SelectedClient" Property="c => c.Description" DisplayName="Description" />
+                    <TextField Entity="@SelectedClient" Property="c => c.ClientUri" DisplayName="Client Uri" />
+                    <TextField Entity="@SelectedClient" Property="c => c.LogoUri" DisplayName="Logo Uri" />
+                    <div class="mb-3">
+                        <label class="form-label">Redirect Uri's</label>
+                        @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())
+                        {
+                            <input type="text" readonly class="form-control-plaintext" value="@redirectUri.RedirectUri">
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Post Logout Redirect Uri's</label>
+                        @foreach (var redirectUri in SelectedClient.PostLogoutRedirectUris ?? Enumerable.Empty<ClientPostLogoutRedirectUri>())
+                        {
+                            <input type="text" readonly class="form-control-plaintext" value="@redirectUri.PostLogoutRedirectUri">
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Allowed Grant Types</label>
+                        @foreach (var grantType in SelectedClient.AllowedGrantTypes ?? Enumerable.Empty<ClientGrantType>())
+                        {
+                            <input type="text" readonly class="form-control-plaintext" value="@grantType.GrantType">
+                        }
+                    </div>
+                </div>
+                <div class="col-4">
+                    <SwitchField Entity="@SelectedClient" Property="c => c.Enabled" DisplayName="Enabled" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.RequireClientSecret" DisplayName="Require Client Secret" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.RequireConsent" DisplayName="Require Consent" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.AllowRememberConsent" DisplayName="Allow Remember Consent" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.AlwaysIncludeUserClaimsInIdToken" DisplayName="Always Include User Claims in Id Token" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.FrontChannelLogoutSessionRequired" DisplayName="Front Channel Logout Session Required" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.BackChannelLogoutSessionRequired" DisplayName="Back Channel Logout Session Required" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.RequirePkce" DisplayName="Require PKCE" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.AllowPlainTextPkce" DisplayName="Allow plain text PKCE" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.RequireRequestObject" DisplayName="Require Request Object" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.AllowAccessTokensViaBrowser" DisplayName="Allow access tokens via browser" />
+                    <SwitchField Entity="@SelectedClient" Property="c => c.NonEditable" DisplayName="Non-editable" />
+                </div>
             </div>
         </div>
-        <div class="col-4">
-            <SwitchField Entity="@SelectedClient" Property="c => c.Enabled" DisplayName="Enabled" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.RequireClientSecret" DisplayName="Require Client Secret" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.RequireConsent" DisplayName="Require Consent" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.AllowRememberConsent" DisplayName="Allow Remember Consent" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.AlwaysIncludeUserClaimsInIdToken" DisplayName="Always Include User Claims in Id Token" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.FrontChannelLogoutSessionRequired" DisplayName="Front Channel Logout Session Required" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.BackChannelLogoutSessionRequired" DisplayName="Back Channel Logout Session Required" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.RequirePkce" DisplayName="Require PKCE" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.AllowPlainTextPkce" DisplayName="Allow plain text PKCE" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.RequireRequestObject" DisplayName="Require Request Object" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.AllowAccessTokensViaBrowser" DisplayName="Allow access tokens via browser" />
-            <SwitchField Entity="@SelectedClient" Property="c => c.NonEditable" DisplayName="Non-editable" />
-            <div class="mb-3">
-                <label class="form-label">Client Secrets</label>
-                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
-                    <PropertyColumn Property="@(s => s.Description)" />
-                    <PropertyColumn Property="@(s => s.Type)" />
-                    <PropertyColumn Property="@(s => s.Created)" />
-                    <PropertyColumn Property="@(s => s.Expiration)" />
-                </QuickGrid>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Properties</label>
-                <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped">
-                    <PropertyColumn Property="@(s => s.Key)" />
-                    <PropertyColumn Property="@(s => s.Value)" />
-                </QuickGrid>
-            </div>
+        <div class="tab-pane fade show" id="secrets-tab-pane" role="tabpanel" aria-labelledby="secrets-tab" tabindex="1">
+            <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
+                <PropertyColumn Property="@(s => s.Description)" />
+                <PropertyColumn Property="@(s => s.Type)" />
+                <PropertyColumn Property="@(s => s.Created)" />
+                <PropertyColumn Property="@(s => s.Expiration)" />
+            </QuickGrid>
+        </div>
+        <div class="tab-pane fade show" id="properties-tab-pane" role="tabpanel" aria-labelledby="properties-tab" tabindex="2">
+            <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped">
+                <PropertyColumn Property="@(s => s.Key)" />
+                <PropertyColumn Property="@(s => s.Value)" />
+            </QuickGrid>
         </div>
     </div>
 }
