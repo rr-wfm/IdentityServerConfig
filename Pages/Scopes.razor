@@ -1,0 +1,16 @@
+﻿@page "/scopes";
+@inject ConfigurationDbContext DbContext;
+
+<QuickGrid Items="@DbContext.ApiScopes" Class="table table-hover table-striped">
+    <PropertyColumn Property="c => c.DisplayName" Title="Display Name" Sortable="true" IsDefaultSort="SortDirection.Ascending" />
+    <PropertyColumn Property="c => c.Name" Title="Name" Sortable="true" />
+    <TemplateColumn Title="Enabled">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" checked="@context.Enabled" disabled>
+        </div>
+    </TemplateColumn>
+    <PropertyColumn Property="c => c.Created" Title="Created" Sortable="true" />
+    <TemplateColumn Title="" Align="Align.Right">
+        <a href="scopes/@context.Id" class="btn btn-link btn-sm" role="button">Details</a>
+    </TemplateColumn>
+</QuickGrid>
