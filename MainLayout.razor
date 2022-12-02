@@ -2,7 +2,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">IdentityServerConfig</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,13 +28,16 @@
                     </ul>                    
                     <AuthorizeView>
                         <Authorized>
+                            <span class="navbar-text p-3">
+                                Hello @context?.User?.Identity?.Name
+                            </span>
                             <form class="d-flex" method="get" action="logout">
                                 <button class="btn btn-outline-success" type="submit">Log out</button>
                             </form>
                         </Authorized>
                         <NotAuthorized>
                             <form class="d-flex">
-                                <a href="login?redirectUri=/" class="btn btn-outline-success">Log in</a>
+                                <a href="login?redirectUri=/" class="btn btn-success">Log in</a>
                             </form>
                         </NotAuthorized>
                     </AuthorizeView>
