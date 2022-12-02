@@ -1,4 +1,3 @@
-using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Storage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -6,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+var openIdConnectConfiguration = builder.Configuration.GetSection("OpenIdConnect");
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
@@ -18,9 +19,9 @@ builder.Services.AddAuthentication(options =>
                 .AddCookie()
                 .AddOpenIdConnect("oidc", options =>
                 {
-                    options.Authority = "https://demo.duendesoftware.com/";
-                    options.ClientId = "interactive.confidential.short";
-                    options.ClientSecret = "secret";
+                    options.Authority = openIdConnectConfiguration.GetValue("Authority", "https://demo.duendesoftware.com/");
+                    options.ClientId = openIdConnectConfiguration.GetValue("ClientId", "interactive.confidential.short");
+                    options.ClientSecret = openIdConnectConfiguration.GetValue("ClientSecret", "secret");
                     options.ResponseType = "code";
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
