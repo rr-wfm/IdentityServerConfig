@@ -18,3 +18,18 @@ dotnet user-secrets set ConnectionStrings:Configuration <your-connection-string>
 ```
 
 By default it is assumed that IdentityServer configuration is stored in the `Configuration` schema within the database, but this can be configured by setting the `ConfigurationSchema` configuration setting in `appsettings.Development.json`
+
+## Configuring authentication
+Out-of-the-box this application uses OpenID Connect for authentication using Duende's IdentityServer [demo instance](https://demo.duendesoftware.com/). This is fine for development, but in most cases you'll want to override the configuration to point to your own instance of IdentityServer.
+
+This can be done by configuring the following configuration settings, through either appsettings.json or environment variables:
+
+| appsettings.json | Environment Variable | Default value |
+|---|---|---|
+| OpenIdConnect:Authority | OpenIdConnect__Authority | https://demo.duendesoftware.com |
+| OpenIdConnect:ClientId | OpenIdConnect__ClientId | interactive.confidential.short |
+| OpenIdConnect:ClientSecret | OpenIdConnect__ClientSecret | secret |
+
+In order to use your own IdentityServer instance, you'll need to add a client to its configuration that has the authorization code with PKCE flow and is authorized for at least the `openid`  and `profile` scopes.
+
+> :warning: Currently this project only requires an authenticated user, but no authorization yet.
