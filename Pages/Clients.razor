@@ -1,4 +1,5 @@
 ﻿@page "/clients"
+@attribute [Authorize]
 @inject ConfigurationDbContext DbContext;
 
 <QuickGrid Items="@DbContext.Clients" Class="table table-hover table-striped">

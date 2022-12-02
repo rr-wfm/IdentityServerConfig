@@ -1,4 +1,5 @@
 ﻿@page "/scopes";
+@attribute [Authorize]
 @inject ConfigurationDbContext DbContext;
 
 <QuickGrid Items="@DbContext.ApiScopes" Class="table table-hover table-striped">

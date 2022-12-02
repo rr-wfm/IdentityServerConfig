@@ -1,4 +1,5 @@
 ﻿@page "/api-resources/{ApiResourceId:int}"
+@attribute [Authorize]
 @inject ConfigurationDbContext DbContext;
 
 @if (SelectedApiResource == null)

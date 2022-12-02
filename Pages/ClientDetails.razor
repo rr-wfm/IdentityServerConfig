@@ -1,4 +1,5 @@
 ﻿@page "/clients/{ClientId:int}"
+@attribute [Authorize]
 @inject ConfigurationDbContext DbContext;
 
 @if (SelectedClient == null)

@@ -1,4 +1,5 @@
 ﻿@page "/api-resources"
+@attribute [Authorize]
 @inject ConfigurationDbContext DbContext;
 
 <QuickGrid Items="@DbContext.ApiResources" Class="table table-hover table-striped">
