@@ -1,11 +1,45 @@
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.EntityFramework.Storage;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
-builder.Services.AddIdentityServer()
-                .AddConfigurationStore(options =>
+builder.Services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                })
+                .AddCookie()
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = "https://demo.duendesoftware.com/";
+                    options.ClientId = "interactive.confidential.short";
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code";
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.UseTokenLifetime = false;
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.TokenValidationParameters = new TokenValidationParameters { NameClaimType = "name" };
+
+                    options.Events = new OpenIdConnectEvents
+                    {
+                        OnAccessDenied = context =>
+                        {
+                            context.HandleResponse();
+                            context.Response.Redirect("/");
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+builder.Services.AddConfigurationDbContext(options =>
                 {
                     options.DefaultSchema = builder.Configuration.GetValue("ConfigurationSchema", "Configuration");
                     options.ConfigureDbContext = b =>
@@ -23,6 +57,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseRouting();
 

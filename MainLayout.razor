@@ -25,7 +25,19 @@
                                 <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Scopes</span>
                             </NavLink>
                         </li>
-                    </ul>
+                    </ul>                    
+                    <AuthorizeView>
+                        <Authorized>
+                            <form class="d-flex" method="get" action="logout">
+                                <button class="btn btn-outline-success" type="submit">Log out</button>
+                            </form>
+                        </Authorized>
+                        <NotAuthorized>
+                            <form class="d-flex">
+                                <a href="login?redirectUri=/" class="btn btn-outline-success">Log in</a>
+                            </form>
+                        </NotAuthorized>
+                    </AuthorizeView>
                 </div>
             </div>
         </nav>
