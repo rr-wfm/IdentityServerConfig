@@ -23,6 +23,9 @@ else
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="scopes-tab" data-bs-toggle="tab" data-bs-target="#scopes-tab-pane" type="button" role="tab" aria-controls="scopes-tab-pane">Scopes</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="claims-tab" data-bs-toggle="tab" data-bs-target="#claims-tab-pane" type="button" role="tab" aria-controls="claims-tab-pane">Claims</button>
+        </li>
     </ul>
     <div class="tab-content" id="clientTabsContent">
         <div class="tab-pane fade show active" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
@@ -93,6 +96,15 @@ else
                 <PropertyColumn Property="s => s.Scope" />
             </QuickGrid>
         </div>
+        <div class="tab-pane fade show" id="claims-tab-pane" role="tabpanel" aria-labelledby="claims-tab" tabindex="4">
+            <QuickGrid Items="@SelectedClient.Claims.AsQueryable()" Class="table table-hover table-striped">
+                <TemplateColumn Title="Prefix">
+                    @SelectedClient.ClientClaimsPrefix
+                </TemplateColumn>
+                <PropertyColumn Property="c => c.Type" />
+                <PropertyColumn Property="c => c.Value" />
+            </QuickGrid>
+        </div>
     </div>
 }
 
@@ -110,6 +122,7 @@ else
                                                 .Include(c => c.ClientSecrets)
                                                 .Include(c => c.AllowedScopes)
                                                 .Include(c => c.Properties)
+                                                .Include(c => c.Claims)
                                                 .FirstOrDefaultAsync(c => c.Id == ClientId);
     }
 }
