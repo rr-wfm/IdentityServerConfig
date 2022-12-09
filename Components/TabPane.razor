@@ -1,0 +1,17 @@
+﻿<div class="tab-pane fade show @(IsActive ? "active" : string.Empty)" id="@TabId-tab-pane" role="tabpanel" aria-labelledby="@TabId-tab" tabindex="@TabIndex">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string TabId { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public int TabIndex { get; set; }
+
+    [Parameter]
+    public bool IsActive { get; set; } = false;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+}
