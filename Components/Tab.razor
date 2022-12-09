@@ -1,0 +1,14 @@
+﻿<li class="nav-item" role="presentation">
+    <button class="nav-link @(IsActive ? "active" : string.Empty)" id="@TabId-tab" data-bs-toggle="tab" data-bs-target="#@TabId-tab-pane" type="button" role="tab" aria-controls="@TabId-tab-pane" aria-selected="true">@Title</button>
+</li>
+
+@code {
+    [Parameter, EditorRequired]
+    public string TabId { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public bool IsActive { get; set; } = false;
+}
