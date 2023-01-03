@@ -9,7 +9,7 @@ namespace IdentityServerConfig.Components
         private string? _propertyName;
         private TProp? _propertyValue;
 
-        [Parameter, EditorRequired]
+        [CascadingParameter, EditorRequired]
         public TEntity Entity { get; set; } = default!;
 
         [Parameter, EditorRequired] public Expression<Func<TEntity, TProp>> Property { get; set; } = default!;

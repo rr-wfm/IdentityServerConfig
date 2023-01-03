@@ -1,0 +1,9 @@
+﻿@typeparam TEntity
+@attribute [CascadingTypeParameter(nameof(TEntity))]
+
+<CascadingValue IsFixed="true" Value="Value">@ChildContent(Value)</CascadingValue>
+
+@code {
+    [Parameter] public TEntity Value { get; set; } = default!;
+    [Parameter] public RenderFragment<TEntity> ChildContent { get; set; } = default!;
+}

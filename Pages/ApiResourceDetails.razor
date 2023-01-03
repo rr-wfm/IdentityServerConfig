@@ -10,59 +10,63 @@
 }
 else
 {
-    <ul class="nav nav-tabs mb-3" id="apiResourceTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general-tab-pane" type="button" role="tab" aria-controls="general-tab-pane" aria-selected="true">General</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="secrets-tab" data-bs-toggle="tab" data-bs-target="#secrets-tab-pane" type="button" role="tab" aria-controls="secrets-tab-pane">Secrets</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="properties-tab" data-bs-toggle="tab" data-bs-target="#properties-tab-pane" type="button" role="tab" aria-controls="properties-tab-pane">Properties</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="scopes-tab" data-bs-toggle="tab" data-bs-target="#scopes-tab-pane" type="button" role="tab" aria-controls="scopes-tab-pane">Scopes</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="apiResourceTabsContent">
-        <div class="tab-pane fade show active" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
-            <div class="row">
-                <div class="col-6">
-                    <TextField Entity="@SelectedApiResource" Property="a => a.Name" DisplayName="Name" />
-                    <TextField Entity="@SelectedApiResource" Property="a => a.DisplayName" DisplayName="Display Name" />
-                    <TextAreaField Entity="@SelectedApiResource" Property="c => c.Description" DisplayName="Description" />
-                    <TextField Entity="@SelectedApiResource" Property="a => a.AllowedAccessTokenSigningAlgorithms" DisplayName="Allowed Access Token Signature Algorithms" />
-                </div>
-                <div class="col-4">
-                    <SwitchField Entity="@SelectedApiResource" Property="a => a.Enabled" DisplayName="Enabled" />
-                    <SwitchField Entity="@SelectedApiResource" Property="a => a.ShowInDiscoveryDocument" DisplayName="Show in Discovery document" />
-                    <SwitchField Entity="@SelectedApiResource" Property="a => a.RequireResourceIndicator" DisplayName="Require resource indicator" />
-                    <SwitchField Entity="@SelectedApiResource" Property="a => a.NonEditable" DisplayName="Non-editable" />
+    <EntityProvider Value="@SelectedApiResource">
+        <ul class="nav nav-tabs mb-3" id="apiResourceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general-tab-pane" type="button" role="tab" aria-controls="general-tab-pane" aria-selected="true">General</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="secrets-tab" data-bs-toggle="tab" data-bs-target="#secrets-tab-pane" type="button" role="tab" aria-controls="secrets-tab-pane">Secrets</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="properties-tab" data-bs-toggle="tab" data-bs-target="#properties-tab-pane" type="button" role="tab" aria-controls="properties-tab-pane">Properties</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="scopes-tab" data-bs-toggle="tab" data-bs-target="#scopes-tab-pane" type="button" role="tab" aria-controls="scopes-tab-pane">Scopes</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="apiResourceTabsContent">
+            <div class="tab-pane fade show active" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-6">
+                        <TextField Property="a => a.Name" DisplayName="Name" />
+                        <TextField Property="a => a.DisplayName" DisplayName="Display Name" />
+                        <TextAreaField Property="c => c.Description" DisplayName="Description" />
+                        <TextField Property="a => a.AllowedAccessTokenSigningAlgorithms" DisplayName="Allowed Access Token Signature Algorithms" />
+                    </div>
+                    <div class="col-4">
+                        <SwitchField Property="a => a.Enabled" DisplayName="Enabled" />
+                        <SwitchField Property="a => a.ShowInDiscoveryDocument" DisplayName="Show in Discovery document" />
+                        <SwitchField Property="a => a.RequireResourceIndicator" DisplayName="Require resource indicator" />
+                        <SwitchField Property="a => a.NonEditable" DisplayName="Non-editable" />
+                    </div>
                 </div>
             </div>
+            <div class="tab-pane fade show" id="secrets-tab-pane" role="tabpanel" aria-labelledby="secrets-tab" tabindex="1">
+                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table">
+                    <PropertyColumn Property="@(s => s.Description)" />
+                    <TemplateColumn Title="Type">
+                        <ChildContent Context="secret">
+                            <span class="badge bg-primary">@secret.Type</span>
+                        </ChildContent>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(s => s.Created)" />
+                    <PropertyColumn Property="@(s => s.Expiration)" />
+                </QuickGrid>
+            </div>
+            <div class="tab-pane fade show" id="properties-tab-pane" role="tabpanel" aria-labelledby="properties-tab" tabindex="2">
+                <QuickGrid Items="@SelectedApiResource.Properties.AsQueryable()" Class="table table-hover table-striped">
+                    <PropertyColumn Property="@(s => s.Key)" />
+                    <PropertyColumn Property="@(s => s.Value)" />
+                </QuickGrid>
+            </div>
+            <div class="tab-pane fade show" id="scopes-tab-pane" role="tabpanel" aria-labelledby="scopes-tab" tabindex="3">
+                <QuickGrid Items="@SelectedApiResource.Scopes.AsQueryable()" Class="table table-hover table-striped">
+                    <PropertyColumn Property="s => s.Scope" />
+                </QuickGrid>
+            </div>
         </div>
-        <div class="tab-pane fade show" id="secrets-tab-pane" role="tabpanel" aria-labelledby="secrets-tab" tabindex="1">
-            <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table">
-                <PropertyColumn Property="@(s => s.Description)" />
-                <TemplateColumn Title="Type">
-                    <span class="badge bg-primary">@context.Type</span>
-                </TemplateColumn>
-                <PropertyColumn Property="@(s => s.Created)" />
-                <PropertyColumn Property="@(s => s.Expiration)" />
-            </QuickGrid>
-        </div>
-        <div class="tab-pane fade show" id="properties-tab-pane" role="tabpanel" aria-labelledby="properties-tab" tabindex="2">
-            <QuickGrid Items="@SelectedApiResource.Properties.AsQueryable()" Class="table table-hover table-striped">
-                <PropertyColumn Property="@(s => s.Key)" />
-                <PropertyColumn Property="@(s => s.Value)" />
-            </QuickGrid>
-        </div>
-        <div class="tab-pane fade show" id="scopes-tab-pane" role="tabpanel" aria-labelledby="scopes-tab" tabindex="3">
-            <QuickGrid Items="@SelectedApiResource.Scopes.AsQueryable()" Class="table table-hover table-striped">
-                <PropertyColumn Property="s => s.Scope" />
-            </QuickGrid>
-        </div>
-    </div>
+    </EntityProvider>
 }
 
 @code {

@@ -10,92 +10,98 @@
 }
 else
 {
-    <ul class="nav nav-tabs mb-3" id="clientTabs" role="tablist">
-        <Tab TabId="general" Title="General" IsActive="true" />
-        <Tab TabId="secrets" Title="Secrets" />
-        <Tab TabId="properties" Title="Properties" />
-        <Tab TabId="scopes" Title="Scopes" />
-        <Tab TabId="claims" Title="Claims" />
-    </ul>
-    <div class="tab-content" id="clientTabsContent">
-        <TabPane TabId="general" TabIndex="0" IsActive="true">
-            <div class="row">
-                <div class="col-6">
-                    <TextField Entity="@SelectedClient" Property="c => c.ClientId" DisplayName="Client Id" />
-                    <TextField Entity="@SelectedClient" Property="c => c.ClientName" DisplayName="Client Name" />
-                    <TextField Entity="@SelectedClient" Property="c => c.ProtocolType" DisplayName="Protocol Type" />
-                    <TextAreaField Entity="@SelectedClient" Property="c => c.Description" DisplayName="Description" />
-                    <TextField Entity="@SelectedClient" Property="c => c.ClientUri" DisplayName="Client Uri" />
-                    <TextField Entity="@SelectedClient" Property="c => c.LogoUri" DisplayName="Logo Uri" />
-                    <div class="mb-3">
-                        <label class="form-label">Redirect Uri's</label>
-                        @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())
-                        {
-                            <input type="text" readonly class="form-control-plaintext" value="@redirectUri.RedirectUri">
-                        }
+    <EntityProvider Value="@SelectedClient">
+        <ul class="nav nav-tabs mb-3" id="clientTabs" role="tablist">
+            <Tab TabId="general" Title="General" IsActive="true" />
+            <Tab TabId="secrets" Title="Secrets" />
+            <Tab TabId="properties" Title="Properties" />
+            <Tab TabId="scopes" Title="Scopes" />
+            <Tab TabId="claims" Title="Claims" />
+        </ul>
+        <div class="tab-content" id="clientTabsContent">
+            <TabPane TabId="general" TabIndex="0" IsActive="true">
+                <div class="row">
+                    <div class="col-6">
+                        <TextField Property="c => c.ClientId" DisplayName="Client Id" />
+                        <TextField Property="c => c.ClientName" DisplayName="Client Name" />
+                        <TextField Property="c => c.ProtocolType" DisplayName="Protocol Type" />
+                        <TextAreaField Property="c => c.Description" DisplayName="Description" />
+                        <TextField Property="c => c.ClientUri" DisplayName="Client Uri" />
+                        <TextField Property="c => c.LogoUri" DisplayName="Logo Uri" />
+                        <div class="mb-3">
+                            <label class="form-label">Redirect Uri's</label>
+                            @foreach (var redirectUri in SelectedClient.RedirectUris ?? Enumerable.Empty<ClientRedirectUri>())
+                            {
+                                <input type="text" readonly class="form-control-plaintext" value="@redirectUri.RedirectUri">
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Post Logout Redirect Uri's</label>
+                            @foreach (var redirectUri in SelectedClient.PostLogoutRedirectUris ?? Enumerable.Empty<ClientPostLogoutRedirectUri>())
+                            {
+                                <input type="text" readonly class="form-control-plaintext" value="@redirectUri.PostLogoutRedirectUri">
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Allowed Grant Types</label>
+                            @foreach (var grantType in SelectedClient.AllowedGrantTypes ?? Enumerable.Empty<ClientGrantType>())
+                            {
+                                <input type="text" readonly class="form-control-plaintext" value="@grantType.GrantType">
+                            }
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Post Logout Redirect Uri's</label>
-                        @foreach (var redirectUri in SelectedClient.PostLogoutRedirectUris ?? Enumerable.Empty<ClientPostLogoutRedirectUri>())
-                        {
-                            <input type="text" readonly class="form-control-plaintext" value="@redirectUri.PostLogoutRedirectUri">
-                        }
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Allowed Grant Types</label>
-                        @foreach (var grantType in SelectedClient.AllowedGrantTypes ?? Enumerable.Empty<ClientGrantType>())
-                        {
-                            <input type="text" readonly class="form-control-plaintext" value="@grantType.GrantType">
-                        }
+                    <div class="col-4">
+                        <SwitchField Property="c => c.Enabled" DisplayName="Enabled" />
+                        <SwitchField Property="c => c.RequireClientSecret" DisplayName="Require Client Secret" />
+                        <SwitchField Property="c => c.RequireConsent" DisplayName="Require Consent" />
+                        <SwitchField Property="c => c.AllowRememberConsent" DisplayName="Allow Remember Consent" />
+                        <SwitchField Property="c => c.AlwaysIncludeUserClaimsInIdToken" DisplayName="Always Include User Claims in Id Token" />
+                        <SwitchField Property="c => c.FrontChannelLogoutSessionRequired" DisplayName="Front Channel Logout Session Required" />
+                        <SwitchField Property="c => c.BackChannelLogoutSessionRequired" DisplayName="Back Channel Logout Session Required" />
+                        <SwitchField Property="c => c.RequirePkce" DisplayName="Require PKCE" />
+                        <SwitchField Property="c => c.AllowPlainTextPkce" DisplayName="Allow plain text PKCE" />
+                        <SwitchField Property="c => c.RequireRequestObject" DisplayName="Require Request Object" />
+                        <SwitchField Property="c => c.AllowAccessTokensViaBrowser" DisplayName="Allow access tokens via browser" />
+                        <SwitchField Property="c => c.NonEditable" DisplayName="Non-editable" />
                     </div>
                 </div>
-                <div class="col-4">
-                    <SwitchField Entity="@SelectedClient" Property="c => c.Enabled" DisplayName="Enabled" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.RequireClientSecret" DisplayName="Require Client Secret" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.RequireConsent" DisplayName="Require Consent" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.AllowRememberConsent" DisplayName="Allow Remember Consent" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.AlwaysIncludeUserClaimsInIdToken" DisplayName="Always Include User Claims in Id Token" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.FrontChannelLogoutSessionRequired" DisplayName="Front Channel Logout Session Required" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.BackChannelLogoutSessionRequired" DisplayName="Back Channel Logout Session Required" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.RequirePkce" DisplayName="Require PKCE" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.AllowPlainTextPkce" DisplayName="Allow plain text PKCE" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.RequireRequestObject" DisplayName="Require Request Object" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.AllowAccessTokensViaBrowser" DisplayName="Allow access tokens via browser" />
-                    <SwitchField Entity="@SelectedClient" Property="c => c.NonEditable" DisplayName="Non-editable" />
-                </div>
-            </div>
-        </TabPane>
-        <TabPane TabId="secrets" TabIndex="1">
-            <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
-                <PropertyColumn Property="@(s => s.Description)" />
-                <TemplateColumn Title="Type">
-                    <span class="badge bg-primary">@context.Type</span>
-                </TemplateColumn>
-                <PropertyColumn Property="@(s => s.Created)" />
-                <PropertyColumn Property="@(s => s.Expiration)" />
-            </QuickGrid>
-        </TabPane>
-        <TabPane TabId="properties" TabIndex="2">
-            <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped">
-                <PropertyColumn Property="s => s.Key" />
-                <PropertyColumn Property="s => s.Value" />
-            </QuickGrid>
-        </TabPane>
-        <TabPane TabId="scopes" TabIndex="3">
-            <QuickGrid Items="@SelectedClient.AllowedScopes.AsQueryable()" Class="table table-hover table-striped">
-                <PropertyColumn Property="s => s.Scope" />
-            </QuickGrid>
-        </TabPane>
-        <TabPane TabId="claims" TabIndex="4">
-            <QuickGrid Items="@SelectedClient.Claims.AsQueryable()" Class="table table-hover table-striped">
-                <TemplateColumn Title="Prefix">
-                    @SelectedClient.ClientClaimsPrefix
-                </TemplateColumn>
-                <PropertyColumn Property="c => c.Type" />
-                <PropertyColumn Property="c => c.Value" />
-            </QuickGrid>
-        </TabPane>
-    </div>
+            </TabPane>
+            <TabPane TabId="secrets" TabIndex="1">
+                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
+                    <PropertyColumn Property="@(s => s.Description)" />
+                    <TemplateColumn Title="Type">
+                        <ChildContent Context="secret">
+                            <span class="badge bg-primary">@secret.Type</span>
+                        </ChildContent>
+                    </TemplateColumn>
+                    <PropertyColumn Property="@(s => s.Created)" />
+                    <PropertyColumn Property="@(s => s.Expiration)" />
+                </QuickGrid>
+            </TabPane>
+            <TabPane TabId="properties" TabIndex="2">
+                <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped">
+                    <PropertyColumn Property="s => s.Key" />
+                    <PropertyColumn Property="s => s.Value" />
+                </QuickGrid>
+            </TabPane>
+            <TabPane TabId="scopes" TabIndex="3">
+                <QuickGrid Items="@SelectedClient.AllowedScopes.AsQueryable()" Class="table table-hover table-striped">
+                    <PropertyColumn Property="s => s.Scope" />
+                </QuickGrid>
+            </TabPane>
+            <TabPane TabId="claims" TabIndex="4">
+                <QuickGrid Items="@SelectedClient.Claims.AsQueryable()" Class="table table-hover table-striped">
+                    <TemplateColumn Title="Prefix">
+                        <ChildContent Context="secret">
+                            @SelectedClient.ClientClaimsPrefix
+                        </ChildContent>
+                    </TemplateColumn>
+                    <PropertyColumn Property="c => c.Type" />
+                    <PropertyColumn Property="c => c.Value" />
+                </QuickGrid>
+            </TabPane>
+        </div>
+    </EntityProvider>
 }
 
 @code {
