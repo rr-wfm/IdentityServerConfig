@@ -364,4 +364,6 @@ FodyWeavers.xsd
 
 # LibMan managed client-side libraries
 wwwroot/lib/**/*
+
+# Local Application Insights configuration file
 /Properties/launchSettings.json
