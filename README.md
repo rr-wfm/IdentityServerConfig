@@ -30,6 +30,14 @@ This can be done by configuring the following configuration settings, through ei
 | OpenIdConnect:ClientId | OpenIdConnect__ClientId | interactive.confidential.short |
 | OpenIdConnect:ClientSecret | OpenIdConnect__ClientSecret | secret |
 
+It is also possible to use the [.NET's user secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows) feature to configure the authentication settings:
+
+```bash
+dotnet user-secrets set OpenIdConnect:Authority <your-identity-server-instance>
+dotnet user-secrets set OpenIdConnect:ClientId <your-client-id>
+dotnet user-secrets set OpenIdConnect:ClientSecret <your-client-secret>
+```
+
 In order to use your own IdentityServer instance, you'll need to add a client to its configuration that has the authorization code with PKCE flow and is authorized for at least the `openid`  and `profile` scopes.
 
 > :warning: Currently this project only requires an authenticated user, but no authorization yet.
