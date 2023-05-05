@@ -49,6 +49,6 @@
 @code {
     bool IsActive(DateTime? expirationDate)
     {
-        return expirationDate >= DateTime.Now;
+        return expirationDate >= DateTime.UtcNow;
     }
 }
