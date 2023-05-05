@@ -72,7 +72,7 @@ builder.Services.AddOperationalDbContext(options =>
 {
     options.DefaultSchema = builder.Configuration.GetValue("OperationalSchema", "Operational");
     options.ConfigureDbContext = b =>
-        b.UseSqlServer(builder.Configuration.GetConnectionString("Configuration"));
+        b.UseSqlServer(builder.Configuration.GetConnectionString("Operational"));
 });
 
 var app = builder.Build();
