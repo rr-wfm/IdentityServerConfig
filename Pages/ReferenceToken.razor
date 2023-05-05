@@ -1,0 +1,54 @@
+﻿@page "/reference-token"
+@attribute [Authorize(Policy = "IDSCReferenceTokenView")]
+@inject PersistedGrantDbContext DbContext
+
+<ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
+    <Tab TabId="general" Title="General" IsActive="true"/>
+    <Tab TabId="check" Title="Check"/>
+</ul>
+<div class="tab-content" id="referenceTokenTabsContent">
+    <TabPane TabId="general" TabIndex="0" IsActive="true">
+        <div class="row">
+            <div class="col-6">
+                <QuickGrid Items='DbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
+                    <PropertyColumn Property="c => c.ClientId" Title="Client Id"></PropertyColumn>
+                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time"></PropertyColumn>
+                    <PropertyColumn Property="c => c.Expiration"></PropertyColumn>
+                    <TemplateColumn Title="Status">
+                        <ChildContent Context="token">
+                            @{
+                                if (IsActive(token.Expiration))
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Expired</span>
+                                }
+                            }
+                        </ChildContent>
+                    </TemplateColumn>
+                    <TemplateColumn Title="" Align="Align.Right" Context="token">
+                        @{
+                            if (IsActive(token.Expiration))
+                            {
+                                <button class="btn btn-sm btn-primary" role="button">Revoke</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-primary" role="button" disabled>Revoke</button>
+                            }
+                        }
+                    </TemplateColumn>
+                </QuickGrid>
+            </div>
+        </div>
+    </TabPane>
+</div>
+
+@code {
+    bool IsActive(DateTime? expirationDate)
+    {
+        return expirationDate >= DateTime.Now;
+    }
+}

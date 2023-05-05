@@ -24,11 +24,11 @@ Out-of-the-box this application uses OpenID Connect for authentication using Due
 
 This can be done by configuring the following configuration settings, through either appsettings.json or environment variables:
 
-| appsettings.json | Environment Variable | Default value |
-|---|---|---|
-| OpenIdConnect:Authority | OpenIdConnect__Authority | https://demo.duendesoftware.com |
-| OpenIdConnect:ClientId | OpenIdConnect__ClientId | interactive.confidential.short |
-| OpenIdConnect:ClientSecret | OpenIdConnect__ClientSecret | secret |
+| appsettings.json           | Environment Variable        | Default value                   |
+|----------------------------|-----------------------------|---------------------------------|
+| OpenIdConnect:Authority    | OpenIdConnect__Authority    | https://demo.duendesoftware.com |
+| OpenIdConnect:ClientId     | OpenIdConnect__ClientId     | interactive.confidential.short  |
+| OpenIdConnect:ClientSecret | OpenIdConnect__ClientSecret | secret                          |
 
 It is also possible to use the [.NET's user secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows) feature to configure the authentication settings:
 
@@ -38,6 +38,24 @@ dotnet user-secrets set OpenIdConnect:ClientId <your-client-id>
 dotnet user-secrets set OpenIdConnect:ClientSecret <your-client-secret>
 ```
 
-In order to use your own IdentityServer instance, you'll need to add a client to its configuration that has the authorization code with PKCE flow and is authorized for at least the `openid`  and `profile` scopes.
+In order to use your own IdentityServer instance, you'll need to add a client to its configuration that has the `AlwaysIncludeUserClaimsInIdToken` set to `true` and has the authorization code with PKCE flow and is authorized for at least the `openid`  and `profile` scopes.
 
-> :warning: Currently this project only requires an authenticated user, but no authorization yet.
+## Authorization
+The authorization for this application is handled though the UserClaims table in the IdentityServer Database. The authorization is currently only configured for the Reference Token page. In order to authorize a user to view this page, you'll need to add a claim to the UserClaims table. The claims types are build up as follows:
+`<application>.<page>:<action>`. The claim value is not used, so it can be left empty.
+
+The `<application>` is always `identity-server-config`, the `<page>` is the name of the page, and the `<action>` is the name of the action. The action is optional, and if not specified, the user will be authorized for all actions on the page.
+If the page is not specified, the user will be authorized for all pages in the application.
+The claims are always written in [kebab-case](https://betterprogramming.pub/string-case-styles-camel-pascal-snake-and-kebab-case-981407998841).
+
+Current accepted claims types are:
+```
+identity-server-config
+identity-server-config.reference-token
+identity-server-config.reference-token:view
+identity-server-config.reference-token:revoke
+identity-server-config.client-secret
+identity-server-config.client-secret:create
+identity-server-config.client-secret:delete
+```
+

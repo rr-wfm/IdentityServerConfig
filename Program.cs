@@ -40,12 +40,40 @@ builder.Services.AddAuthentication(options =>
                         }
                     };
                 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IDSCReferenceTokenView", policy =>
+        policy.RequireAssertion(context  =>
+            context.User.HasClaim(c =>
+                c.Type is "identity-server-config" or "identity-server-config.reference-token" or "identity-server-config.reference-token:view")));
+    
+    options.AddPolicy("IDSCReferenceTokenRevoke", policy =>
+        policy.RequireAssertion(context  =>
+            context.User.HasClaim(c =>
+                c.Type is "identity-server-config" or "identity-server-config.reference-token" or "identity-server-config.reference-token:revoke")));
+    
+    options.AddPolicy("IDSCClientSecretCreate", policy =>
+        policy.RequireAssertion(context => 
+            context.User.HasClaim(c => 
+                c.Type is "identity-server-config" or "identity-server-config.client-secret" or "identity-server-config.client-secret:create")));
+
+    options.AddPolicy("IDSCClientSecretDelete", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c =>
+                c.Type is "identity-server-config" or "identity-server-config.client-secret" or "identity-server-config.client-secret:delete")));
+});
 builder.Services.AddConfigurationDbContext(options =>
                 {
                     options.DefaultSchema = builder.Configuration.GetValue("ConfigurationSchema", "Configuration");
                     options.ConfigureDbContext = b =>
                         b.UseSqlServer(builder.Configuration.GetConnectionString("Configuration"));
                 });
+builder.Services.AddOperationalDbContext(options =>
+{
+    options.DefaultSchema = builder.Configuration.GetValue("OperationalSchema", "Operational");
+    options.ConfigureDbContext = b =>
+        b.UseSqlServer(builder.Configuration.GetConnectionString("Configuration"));
+});
 
 var app = builder.Build();
 
