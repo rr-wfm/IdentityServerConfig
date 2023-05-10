@@ -361,6 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# LibMan managed client-side libraries
-/src/wwwroot/lib/**/*
