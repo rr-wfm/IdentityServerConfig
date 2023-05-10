@@ -363,8 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # LibMan managed client-side libraries
-wwwroot/lib/**/*
-
-# .idea folder
-.idea/
-/src/.idea/**/*
+/src/wwwroot/lib/**/*

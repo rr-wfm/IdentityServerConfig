@@ -1,13 +1,12 @@
 using System.Security.Claims;
 using FluentAssertions;
-using IdentityServerConfig.Components;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServerConfig.UnitTest;
 
 [TestFixture]
-public class Authorization
+public class AuthorizationPoliciesTests
 {
     private IAuthorizationPolicyProvider _authorizationPolicyProvider;
     private IAuthorizationService _authorizationService;
@@ -30,7 +29,7 @@ public class Authorization
     [TestCase("identity-server-config.reference-token:view", true)]
     [TestCase("identity-server-config.reference-token", true)]
     [TestCase("identity-server-config", true)]
-    [TestCase("some-other-claim", false)]
+    [TestCase("identity-server-config.reference-token:revoke", false)]
     public async Task TestReferenceTokenViewPolicy(string userClaim, bool expectedResult)
     {
         var claim = new Claim(userClaim, "true");
@@ -44,7 +43,7 @@ public class Authorization
     [TestCase("identity-server-config.reference-token:revoke", true)]
     [TestCase("identity-server-config.reference-token", true)]
     [TestCase("identity-server-config", true)]
-    [TestCase("some-other-claim", false)]
+    [TestCase("identity-server-config.reference-token:view", false)]
     public async Task TestRevokeReferenceTokenPolicy(string userClaim, bool expectedResult)
     {
         var claim = new Claim(userClaim, "true");
@@ -58,7 +57,7 @@ public class Authorization
     [TestCase("identity-server-config.client-secret:create", true)]
     [TestCase("identity-server-config.client-secret", true)]
     [TestCase("identity-server-config", true)]
-    [TestCase("some-other-claim", false)]
+    [TestCase("identity-server-config.client-secret:delete", false)]
     public async Task TestCreateClientSecret(string userClaim, bool expectedResult)
     {
         var claim = new Claim(userClaim, "true");
@@ -72,7 +71,7 @@ public class Authorization
     [TestCase("identity-server-config.client-secret:delete", true)]
     [TestCase("identity-server-config.client-secret", true)]
     [TestCase("identity-server-config", true)]
-    [TestCase("some-other-claim", false)]
+    [TestCase("identity-server-config.client-secret:create", false)]
     public async Task TestDeleteClientSecret(string userClaim, bool expectedResult)
     {
         var claim = new Claim(userClaim, "true");

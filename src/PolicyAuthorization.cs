@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-
-namespace IdentityServerConfig.Components;
+namespace Microsoft.AspNetCore.Authorization;
 
 public static class PolicyAuthorization
 {
