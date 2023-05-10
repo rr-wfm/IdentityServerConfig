@@ -13,7 +13,7 @@ variables:
   dockerRegistryServiceConnection: '5af9a6c8-893e-4af7-9a1c-2bd68a978792'
   imageRepository: 'rr/identityserverconfig'
   containerRegistry: 'rrwfm.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/src/Dockerfile'
   tag: '$(Build.BuildId)'
 
   # Agent VM image name
