@@ -74,7 +74,7 @@ else
                             <span class="badge bg-primary">@secret.Type</span>
                         </ChildContent>
                     </TemplateColumn>
-                    <PropertyColumn Property="@(s => s.Created)" />
+                    <PropertyColumn Property="@(s => s.Created)" Title="Created (UTC)"/>
                     <PropertyColumn Property="@(s => s.Expiration)" />
                 </QuickGrid>
             </TabPane>

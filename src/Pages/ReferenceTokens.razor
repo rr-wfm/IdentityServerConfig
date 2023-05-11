@@ -1,6 +1,11 @@
 ﻿@page "/reference-tokens"
+@using System.Security.Cryptography
+@using System.Text
+@using Microsoft.AspNetCore.Components.Forms
+@using IdentityServerConfig.Models
 @attribute [Authorize(Policy = "ReferenceTokenView")]
-@inject PersistedGrantDbContext DbContext
+@inject PersistedGrantDbContext PersistedGrantDbContext
+@inject ConfigurationDbContext ConfigurationDbContext
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -10,10 +15,10 @@
     <TabPane TabId="general" TabIndex="0" IsActive="true">
         <div class="row">
             <div class="col-6">
-                <QuickGrid Items='DbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
+                <QuickGrid Items='PersistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
                     <PropertyColumn Property="c => c.ClientId" Title="Client Id"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time"></PropertyColumn>
-                    <PropertyColumn Property="c => c.Expiration"></PropertyColumn>
+                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)"></PropertyColumn>
+                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)"></PropertyColumn>
                     <TemplateColumn Title="Status">
                         <ChildContent Context="token">
                             @{
@@ -44,11 +49,95 @@
             </div>
         </div>
     </TabPane>
+    <TabPane TabId="check" TabIndex="1">
+        <div class="row">
+            <div class="col-6">
+                <EditForm Model="_checkTokenModel" OnSubmit="@HandleSubmit" autocomplete="off" >
+                    <div class="from-group mb-3">
+                        <label for="clientId">Client Id</label>
+                        <select id="clientId" class="form-select" @bind="_checkTokenModel.ClientId" required>
+                            <option value="" disabled selected>Select Client</option>
+                            @foreach (var client in ConfigurationDbContext.Clients)
+                            {
+                                <option value="@client.ClientId">@client.ClientId</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group  mb-3">
+                        <label for="referenceToken">ReferenceToken</label>
+                        <input type="text" id="referenceToken" class="form-control" autocomplete="false" @bind="_checkTokenModel.ReferenceToken" required/>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary" role="button">Check</button>
+                </EditForm>
+            </div>
+            <div class="col-3">
+                @switch (_referenceTokenData.Status)
+                {
+                    case "notChecked":
+                        break;
+                    case "Invalid":
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Invalid</h4>
+                            <p>The Reference Token for @_referenceTokenData.ClientId is invalid</p>
+                        </div>
+                        break;
+                    case "Active":
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Valid</h4>
+                            <p>Creation Time: @_referenceTokenData.CreationTime UTC</p>
+                            <p>Expiration Time: @_referenceTokenData.Expiration UTC</p>
+                        </div>
+                        break;
+                    case "Expired":
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Expired</h4>
+                            <p>Creation Time: @_referenceTokenData.CreationTime UTC</p>
+                            <p>Expiration Time: @_referenceTokenData.Expiration UTC</p>
+                        </div>
+                        break;
+                }
+            </div>
+        </div>
+    </TabPane>
 </div>
 
 @code {
-    bool IsActive(DateTime? expirationDate)
+    readonly CheckReferenceTokenModel _checkTokenModel = new();
+    readonly ReferenceTokenDataModel _referenceTokenData = new();
+    
+    private static bool IsActive(DateTime? expirationDate)
     {
-        return expirationDate >= DateTime.UtcNow;
+        return expirationDate == null || expirationDate >= DateTime.UtcNow;
+    }
+    
+    private void HandleSubmit(EditContext editContext)
+    {
+        //hash the token
+        var token = _checkTokenModel.ReferenceToken + ":reference_token";
+        var sha256 = SHA256.Create();
+        var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
+        var hexString = BitConverter.ToString(hash).Replace("-", "");
+
+        //check if the token exists in the database
+        var persistedGrant = PersistedGrantDbContext.PersistedGrants.FirstOrDefault(c => c.Key.Equals(hexString));
+        if (persistedGrant == null)
+        {
+            _referenceTokenData.Status = "Invalid";
+            return;
+        }
+
+        //check if the client id matches with the reference token
+        var clientCheck = persistedGrant.ClientId.Equals(_checkTokenModel.ClientId);
+        if (clientCheck)
+        {
+            _referenceTokenData.Status = IsActive(persistedGrant.Expiration) ? "Active" : "Expired";
+            _referenceTokenData.CreationTime = persistedGrant.CreationTime;
+            _referenceTokenData.Expiration = persistedGrant.Expiration;
+        }
+        else
+        {
+            _referenceTokenData.Status = "Invalid";
+            _referenceTokenData.ClientId = _checkTokenModel.ClientId;
+        }
     }
 }
