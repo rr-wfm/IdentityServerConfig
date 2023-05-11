@@ -123,6 +123,7 @@
         if (persistedGrant == null)
         {
             _referenceTokenData.Status = "Invalid";
+            _referenceTokenData.ClientId = _checkTokenModel.ClientId;
             return;
         }
 
