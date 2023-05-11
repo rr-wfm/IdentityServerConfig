@@ -6,8 +6,16 @@
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
                     @{
-                        var returnUrl = UriHelper.ToBaseRelativePath(UriHelper.Uri);
-                        UriHelper.NavigateTo($"login?redirectUri={returnUrl}", forceLoad: true);
+                        var authorized = context.User.Identity.IsAuthenticated;
+                        if (!authorized)
+                        {
+                            var returnUrl = UriHelper.ToBaseRelativePath(UriHelper.Uri);
+                            UriHelper.NavigateTo($"login?redirectUri={returnUrl}", forceLoad: true);
+                        }
+                        else
+                        {
+                            <p>You are not authorized to access this resource.</p>
+                        }
                     }
                 </NotAuthorized>
                 <Authorizing>
