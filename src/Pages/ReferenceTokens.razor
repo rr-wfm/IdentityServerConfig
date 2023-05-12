@@ -19,21 +19,19 @@
                     <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"></PropertyColumn>
                     <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"></PropertyColumn>
                     <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"></PropertyColumn>
-                    <TemplateColumn Title="Status">
-                        <ChildContent Context="token">
-                            @{
-                                if (IsActive(token.Expiration))
-                                {
-                                    <span class="badge bg-success">Active</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Expired</span>
-                                }
+                    <TemplateColumn Title="Status" Context="token">
+                        @{
+                            if (IsActive(token.Expiration))
+                            {
+                                <span class="badge bg-success">Active</span>
                             }
-                        </ChildContent>
+                            else
+                            {
+                                <span class="badge bg-danger">Expired</span>
+                            }
+                        }
                     </TemplateColumn>
-                    <TemplateColumn Title="" Align="Align.Right" Context="token">
+                    <TemplateColumn Context="token">
                         @{
                             if (IsActive(token.Expiration))
                             {
@@ -52,7 +50,7 @@
     <TabPane TabId="check" TabIndex="1">
         <div class="row">
             <div class="col-6">
-                <EditForm Model="_checkTokenModel" OnSubmit="@HandleSubmit" autocomplete="off" >
+                <EditForm Model="_checkTokenModel" OnSubmit="@HandleSubmit" autocomplete="off">
                     <div class="from-group mb-3">
                         <label for="clientId">Client Id</label>
                         <select id="clientId" class="form-select" @bind="_checkTokenModel.ClientId" required>
@@ -63,8 +61,8 @@
                             }
                         </select>
                     </div>
-                    <div class="form-group  mb-3">
-                        <label for="referenceToken">ReferenceToken</label>
+                    <div class="form-group mb-3">
+                        <label for="referenceToken">Reference Token</label>
                         <input type="text" id="referenceToken" class="form-control" autocomplete="false" @bind="_checkTokenModel.ReferenceToken" required/>
                     </div>
                     <button type="submit" class="btn btn-sm btn-primary" role="button">Check</button>
@@ -113,7 +111,7 @@
     private void HandleSubmit(EditContext editContext)
     {
         //hash the token
-        var token = _checkTokenModel.ReferenceToken + ":reference_token";
+        var token = string.Concat(_checkTokenModel.ReferenceToken, ":reference_token");
         var sha256 = SHA256.Create();
         var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
         var hexString = BitConverter.ToString(hash).Replace("-", "");
