@@ -5,7 +5,5 @@ namespace IdentityServerConfig.Services;
 
 public interface IReferenceTokenValidator
 {
-    bool IsActive(DateTime? expirationDate);
-
     ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel);
 }

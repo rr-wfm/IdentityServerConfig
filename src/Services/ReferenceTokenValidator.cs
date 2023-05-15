@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using IdentityServerConfig.Models;
+using IdentityServerConfig.Pages;
 
 namespace IdentityServerConfig.Services;
 
@@ -13,11 +14,6 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
         _persistedGrantDbContext = persistedGrantDbContext;
     }
     
-    public bool IsActive(DateTime? expirationDate)
-    {
-        return expirationDate == null || expirationDate >= DateTime.UtcNow;
-    }
-
     public ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel)
     {
         ReferenceTokenDataModel returnValue = new();
@@ -40,7 +36,7 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
         var clientCheck = persistedGrant.ClientId.Equals(checkReferenceTokenModel.ClientId);
         if (clientCheck)
         {
-            returnValue.Status = IsActive(persistedGrant.Expiration) ? ReferenceTokenDataModel.StatusCode.Active : ReferenceTokenDataModel.StatusCode.Expired; 
+            returnValue.Status = ReferenceTokens.IsActive(persistedGrant.Expiration) ? ReferenceTokenDataModel.StatusCode.Active : ReferenceTokenDataModel.StatusCode.Expired; 
             returnValue.CreationTime = persistedGrant.CreationTime;
             returnValue.Expiration = persistedGrant.Expiration;
         }
