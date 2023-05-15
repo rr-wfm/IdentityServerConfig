@@ -10,7 +10,7 @@
             <input class="form-check-input" type="checkbox" role="switch" checked="@context.Enabled" disabled>
         </div>
     </TemplateColumn>
-    <PropertyColumn Property="c => c.Created" Title="Created" Sortable="true" />
+    <PropertyColumn Property="c => c.Created" Title="Created (UTC)" Sortable="true" />
     <TemplateColumn Title="" Align="Align.Right">
         <a href="scopes/@context.Id" class="btn btn-link btn-sm" role="button">Details</a>
     </TemplateColumn>

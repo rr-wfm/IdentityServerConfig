@@ -1,0 +1,21 @@
+@using IdentityServerConfig.Models
+
+@if (!Model.Status.Equals(ReferenceTokenDataModel.StatusCode.NotChecked))
+{
+    <div class="alert @(Model.Status.Equals(ReferenceTokenDataModel.StatusCode.Active) ? "alert-success" : "alert-danger") " role="alert">
+        <h4 class="alert-heading">@Model.Status.ToString()</h4>
+        @if (Model.Status.Equals(ReferenceTokenDataModel.StatusCode.Invalid))
+        {
+            <p>Reference token either does not exist or does not belong to this client</p>
+        }
+        else
+        {
+            <p>Creation Time: @Model.CreationTime UTC</p>
+            <p>Expiration Time: @Model.Expiration UTC</p>
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    public ReferenceTokenDataModel Model { get; set; }
+}

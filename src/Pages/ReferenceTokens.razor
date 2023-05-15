@@ -1,6 +1,11 @@
 ﻿@page "/reference-tokens"
+@using Microsoft.AspNetCore.Components.Forms
+@using IdentityServerConfig.Models
+@using IdentityServerConfig.Services
 @attribute [Authorize(Policy = "ReferenceTokenView")]
-@inject PersistedGrantDbContext DbContext
+@inject PersistedGrantDbContext persistedGrantDbContext
+@inject ConfigurationDbContext configurationDbContext
+@inject IReferenceTokenValidator referenceTokenValidator
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -10,25 +15,23 @@
     <TabPane TabId="general" TabIndex="0" IsActive="true">
         <div class="row">
             <div class="col-6">
-                <QuickGrid Items='DbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
+                <QuickGrid Items='persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
                     <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.Expiration" Sortable="true"></PropertyColumn>
-                    <TemplateColumn Title="Status">
-                        <ChildContent Context="token">
-                            @{
-                                if (IsActive(token.Expiration))
-                                {
-                                    <span class="badge bg-success">Active</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Expired</span>
-                                }
+                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"></PropertyColumn>
+                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"></PropertyColumn>
+                    <TemplateColumn Title="Status" Context="token">
+                        @{
+                            if (IsActive(token.Expiration))
+                            {
+                                <span class="badge bg-success">Active</span>
                             }
-                        </ChildContent>
+                            else
+                            {
+                                <span class="badge bg-danger">Expired</span>
+                            }
+                        }
                     </TemplateColumn>
-                    <TemplateColumn Title="" Align="Align.Right" Context="token">
+                    <TemplateColumn Context="token">
                         @{
                             if (IsActive(token.Expiration))
                             {
@@ -44,11 +47,46 @@
             </div>
         </div>
     </TabPane>
+    <TabPane TabId="check" TabIndex="1">
+        <div class="row">
+            <div class="col-6">
+                <EditForm Model="_checkTokenModel" OnSubmit="@CheckReferenceToken" autocomplete="off">
+                    <div class="from-group mb-3">
+                        <label for="clientId">Client</label>
+                        <select id="clientId" class="form-select" @bind="_checkTokenModel.ClientId" required>
+                            <option value="" disabled selected>Select Client</option>
+                            @foreach (var client in configurationDbContext.Clients)
+                            {
+                                var clientName = client.ClientName ?? "No Name";
+                                <option value="@client.ClientId">@client.ClientId - @clientName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="referenceToken">Reference Token</label>
+                        <input type="text" id="referenceToken" class="form-control" autocomplete="false" @bind="_checkTokenModel.ReferenceToken" required/>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary" role="button">Check</button>
+                </EditForm>
+            </div>
+            <div class="col-3">
+                <ReferenceTokenStatus Model="@_referenceTokenData"></ReferenceTokenStatus>
+            </div>
+        </div>
+    </TabPane>
 </div>
 
 @code {
-    bool IsActive(DateTime? expirationDate)
+    readonly CheckReferenceTokenModel _checkTokenModel = new();
+    ReferenceTokenDataModel _referenceTokenData = new();
+    
+    public static bool IsActive(DateTime? expirationDate)
     {
-        return expirationDate >= DateTime.UtcNow;
+        return expirationDate == null || expirationDate >= DateTime.UtcNow;
+    }
+    
+    private void CheckReferenceToken(EditContext editContext)
+    {
+        _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
 }
