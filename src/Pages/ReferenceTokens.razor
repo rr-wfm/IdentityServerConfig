@@ -69,24 +69,24 @@
                 </EditForm>
             </div>
             <div class="col-3">
-                @switch (_referenceTokenData.Status)
+                @switch (_status)
                 {
-                    case "notChecked":
+                    case ReferenceTokenDataModel.Status.NotChecked:
                         break;
-                    case "Invalid":
+                    case ReferenceTokenDataModel.Status.Invalid:
                         <div class="alert alert-danger" role="alert">
                             <h4 class="alert-heading">Invalid</h4>
                             <p>The Reference Token for @_referenceTokenData.ClientId is invalid</p>
                         </div>
                         break;
-                    case "Active":
+                    case ReferenceTokenDataModel.Status.Active:
                         <div class="alert alert-success" role="alert">
                             <h4 class="alert-heading">Valid</h4>
                             <p>Creation Time: @_referenceTokenData.CreationTime UTC</p>
                             <p>Expiration Time: @_referenceTokenData.Expiration UTC</p>
                         </div>
                         break;
-                    case "Expired":
+                    case ReferenceTokenDataModel.Status.Expired:
                         <div class="alert alert-danger" role="alert">
                             <h4 class="alert-heading">Expired</h4>
                             <p>Creation Time: @_referenceTokenData.CreationTime UTC</p>
@@ -102,6 +102,7 @@
 @code {
     readonly CheckReferenceTokenModel _checkTokenModel = new();
     readonly ReferenceTokenDataModel _referenceTokenData = new();
+    private ReferenceTokenDataModel.Status _status;
     
     private static bool IsActive(DateTime? expirationDate)
     {
@@ -120,7 +121,7 @@
         var persistedGrant = PersistedGrantDbContext.PersistedGrants.FirstOrDefault(c => c.Key.Equals(hexString));
         if (persistedGrant == null)
         {
-            _referenceTokenData.Status = "Invalid";
+            _status = ReferenceTokenDataModel.Status.Invalid;
             _referenceTokenData.ClientId = _checkTokenModel.ClientId;
             return;
         }
@@ -129,13 +130,13 @@
         var clientCheck = persistedGrant.ClientId.Equals(_checkTokenModel.ClientId);
         if (clientCheck)
         {
-            _referenceTokenData.Status = IsActive(persistedGrant.Expiration) ? "Active" : "Expired";
+            _status = IsActive(persistedGrant.Expiration) ? ReferenceTokenDataModel.Status.Active : ReferenceTokenDataModel.Status.Expired; 
             _referenceTokenData.CreationTime = persistedGrant.CreationTime;
             _referenceTokenData.Expiration = persistedGrant.Expiration;
         }
         else
         {
-            _referenceTokenData.Status = "Invalid";
+            _status = ReferenceTokenDataModel.Status.Invalid;
             _referenceTokenData.ClientId = _checkTokenModel.ClientId;
         }
     }
