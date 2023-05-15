@@ -52,12 +52,13 @@
             <div class="col-6">
                 <EditForm Model="_checkTokenModel" OnSubmit="@HandleSubmit" autocomplete="off">
                     <div class="from-group mb-3">
-                        <label for="clientId">Client Id</label>
+                        <label for="clientId">Client</label>
                         <select id="clientId" class="form-select" @bind="_checkTokenModel.ClientId" required>
                             <option value="" disabled selected>Select Client</option>
                             @foreach (var client in configurationDbContext.Clients)
                             {
-                                <option value="@client.ClientId">@client.ClientId</option>
+                                var clientName = client.ClientName ?? "No Name";
+                                <option value="@client.ClientId">@client.ClientId - @clientName</option>
                             }
                         </select>
                     </div>

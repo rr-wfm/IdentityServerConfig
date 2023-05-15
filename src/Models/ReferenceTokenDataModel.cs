@@ -13,5 +13,4 @@ public class ReferenceTokenDataModel
     public StatusCode Status { get; set; }
     public DateTime? CreationTime { get; set; }
     public DateTime? Expiration { get; set; }
-    public string? ClientId { get; set; }
 }

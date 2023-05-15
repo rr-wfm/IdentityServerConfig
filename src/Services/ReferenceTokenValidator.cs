@@ -33,7 +33,6 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
         if (persistedGrant == null)
         {
             returnValue.Status = ReferenceTokenDataModel.StatusCode.Invalid;
-            returnValue.ClientId = checkReferenceTokenModel.ClientId;
             return returnValue;
         }
 
@@ -48,7 +47,6 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
         else
         {
             returnValue.Status = ReferenceTokenDataModel.StatusCode.Invalid;
-            returnValue.ClientId = checkReferenceTokenModel.ClientId;
         }
 
         return returnValue;
