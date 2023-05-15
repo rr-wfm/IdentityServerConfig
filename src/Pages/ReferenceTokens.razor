@@ -81,6 +81,6 @@
     
     private void HandleSubmit(EditContext editContext)
     {
-        _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel, persistedGrantDbContext);
+        _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
 }

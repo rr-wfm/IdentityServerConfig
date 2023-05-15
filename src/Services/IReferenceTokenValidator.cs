@@ -7,6 +7,5 @@ public interface IReferenceTokenValidator
 {
     bool IsActive(DateTime? expirationDate);
 
-    ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel,
-        PersistedGrantDbContext persistedGrantDbContext);
+    ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel);
 }

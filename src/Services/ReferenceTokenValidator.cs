@@ -7,13 +7,18 @@ namespace IdentityServerConfig.Services;
 
 public class ReferenceTokenValidator : IReferenceTokenValidator
 {
+    private readonly PersistedGrantDbContext _persistedGrantDbContext;
+    public ReferenceTokenValidator(PersistedGrantDbContext persistedGrantDbContext)
+    {
+        _persistedGrantDbContext = persistedGrantDbContext;
+    }
+    
     public bool IsActive(DateTime? expirationDate)
     {
         return expirationDate == null || expirationDate >= DateTime.UtcNow;
     }
 
-    public ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel,
-        PersistedGrantDbContext persistedGrantDbContext)
+    public ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel)
     {
         ReferenceTokenDataModel returnValue = new();
         
@@ -24,7 +29,7 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
         var hexString = BitConverter.ToString(hash).Replace("-", "");
 
         //check if the token exists in the database
-        var persistedGrant = persistedGrantDbContext.PersistedGrants.FirstOrDefault(c => c.Key.Equals(hexString));
+        var persistedGrant = _persistedGrantDbContext.PersistedGrants.FirstOrDefault(c => c.Key.Equals(hexString));
         if (persistedGrant == null)
         {
             returnValue.Status = ReferenceTokenDataModel.StatusCode.Invalid;
