@@ -2,13 +2,15 @@ namespace IdentityServerConfig.Models;
 
 public class ReferenceTokenDataModel
 {
-    public enum Status
+    public enum StatusCode
     {
         NotChecked,
         Invalid,
         Active,
         Expired
     }
+
+    public StatusCode Status { get; set; }
     public DateTime? CreationTime { get; set; }
     public DateTime? Expiration { get; set; }
     public string? ClientId { get; set; }

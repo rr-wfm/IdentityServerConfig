@@ -1,11 +1,11 @@
 ﻿@page "/reference-tokens"
-@using System.Security.Cryptography
-@using System.Text
 @using Microsoft.AspNetCore.Components.Forms
 @using IdentityServerConfig.Models
+@using IdentityServerConfig.Services
 @attribute [Authorize(Policy = "ReferenceTokenView")]
-@inject PersistedGrantDbContext PersistedGrantDbContext
-@inject ConfigurationDbContext ConfigurationDbContext
+@inject PersistedGrantDbContext persistedGrantDbContext
+@inject ConfigurationDbContext configurationDbContext
+@inject IReferenceTokenValidator referenceTokenValidator
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -15,13 +15,13 @@
     <TabPane TabId="general" TabIndex="0" IsActive="true">
         <div class="row">
             <div class="col-6">
-                <QuickGrid Items='PersistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
+                <QuickGrid Items='persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
                     <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"></PropertyColumn>
                     <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"></PropertyColumn>
                     <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"></PropertyColumn>
                     <TemplateColumn Title="Status" Context="token">
                         @{
-                            if (IsActive(token.Expiration))
+                            if (referenceTokenValidator.IsActive(token.Expiration))
                             {
                                 <span class="badge bg-success">Active</span>
                             }
@@ -33,7 +33,7 @@
                     </TemplateColumn>
                     <TemplateColumn Context="token">
                         @{
-                            if (IsActive(token.Expiration))
+                            if (referenceTokenValidator.IsActive(token.Expiration))
                             {
                                 <button class="btn btn-sm btn-danger" role="button">Revoke</button>
                             }
@@ -55,7 +55,7 @@
                         <label for="clientId">Client Id</label>
                         <select id="clientId" class="form-select" @bind="_checkTokenModel.ClientId" required>
                             <option value="" disabled selected>Select Client</option>
-                            @foreach (var client in ConfigurationDbContext.Clients)
+                            @foreach (var client in configurationDbContext.Clients)
                             {
                                 <option value="@client.ClientId">@client.ClientId</option>
                             }
@@ -69,7 +69,7 @@
                 </EditForm>
             </div>
             <div class="col-3">
-                <ReferenceTokenStatus Status="@_status" ReferenceTokenData="@_referenceTokenData"></ReferenceTokenStatus>
+                <ReferenceTokenStatus ReferenceTokenData="@_referenceTokenData"></ReferenceTokenStatus>
             </div>
         </div>
     </TabPane>
@@ -77,43 +77,10 @@
 
 @code {
     readonly CheckReferenceTokenModel _checkTokenModel = new();
-    readonly ReferenceTokenDataModel _referenceTokenData = new();
-    private ReferenceTokenDataModel.Status _status;
-    
-    private static bool IsActive(DateTime? expirationDate)
-    {
-        return expirationDate == null || expirationDate >= DateTime.UtcNow;
-    }
+    ReferenceTokenDataModel _referenceTokenData = new();
     
     private void HandleSubmit(EditContext editContext)
     {
-        //hash the token
-        var token = string.Concat(_checkTokenModel.ReferenceToken, ":reference_token");
-        var sha256 = SHA256.Create();
-        var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
-        var hexString = BitConverter.ToString(hash).Replace("-", "");
-
-        //check if the token exists in the database
-        var persistedGrant = PersistedGrantDbContext.PersistedGrants.FirstOrDefault(c => c.Key.Equals(hexString));
-        if (persistedGrant == null)
-        {
-            _status = ReferenceTokenDataModel.Status.Invalid;
-            _referenceTokenData.ClientId = _checkTokenModel.ClientId;
-            return;
-        }
-
-        //check if the client id matches with the reference token
-        var clientCheck = persistedGrant.ClientId.Equals(_checkTokenModel.ClientId);
-        if (clientCheck)
-        {
-            _status = IsActive(persistedGrant.Expiration) ? ReferenceTokenDataModel.Status.Active : ReferenceTokenDataModel.Status.Expired; 
-            _referenceTokenData.CreationTime = persistedGrant.CreationTime;
-            _referenceTokenData.Expiration = persistedGrant.Expiration;
-        }
-        else
-        {
-            _status = ReferenceTokenDataModel.Status.Invalid;
-            _referenceTokenData.ClientId = _checkTokenModel.ClientId;
-        }
+        _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel, persistedGrantDbContext);
     }
 }

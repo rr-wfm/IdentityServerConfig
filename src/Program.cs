@@ -1,4 +1,5 @@
 using Duende.IdentityServer.EntityFramework.Storage;
+using IdentityServerConfig.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ var openIdConnectConfiguration = builder.Configuration.GetSection("OpenIdConnect
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
+builder.Services.AddScoped<IReferenceTokenValidator, ReferenceTokenValidator>();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;

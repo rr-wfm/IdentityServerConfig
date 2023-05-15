@@ -1,10 +1,10 @@
 @using IdentityServerConfig.Models
 
-@if (!Status.Equals(ReferenceTokenDataModel.Status.NotChecked))
+@if (!ReferenceTokenData.Status.Equals(ReferenceTokenDataModel.StatusCode.NotChecked))
 {
-    <div class="alert @(Status.Equals(ReferenceTokenDataModel.Status.Active) ? "alert-success" : "alert-danger") " role="alert">
-        <h4 class="alert-heading">@Status.ToString()</h4>
-        @if (Status.Equals(ReferenceTokenDataModel.Status.Invalid))
+    <div class="alert @(ReferenceTokenData.Status.Equals(ReferenceTokenDataModel.StatusCode.Active) ? "alert-success" : "alert-danger") " role="alert">
+        <h4 class="alert-heading">@ReferenceTokenData.Status.ToString()</h4>
+        @if (ReferenceTokenData.Status.Equals(ReferenceTokenDataModel.StatusCode.Invalid))
         {
             <p>The Reference Token for @ReferenceTokenData.ClientId is invalid</p>
         }
@@ -18,6 +18,4 @@
 @code{
     [Parameter]
     public ReferenceTokenDataModel ReferenceTokenData { get; set; }
-    [Parameter]
-    public ReferenceTokenDataModel.Status Status { get; set; }
 }
