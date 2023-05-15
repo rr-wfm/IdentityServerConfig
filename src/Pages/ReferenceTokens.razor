@@ -69,31 +69,7 @@
                 </EditForm>
             </div>
             <div class="col-3">
-                @switch (_status)
-                {
-                    case ReferenceTokenDataModel.Status.NotChecked:
-                        break;
-                    case ReferenceTokenDataModel.Status.Invalid:
-                        <div class="alert alert-danger" role="alert">
-                            <h4 class="alert-heading">Invalid</h4>
-                            <p>The Reference Token for @_referenceTokenData.ClientId is invalid</p>
-                        </div>
-                        break;
-                    case ReferenceTokenDataModel.Status.Active:
-                        <div class="alert alert-success" role="alert">
-                            <h4 class="alert-heading">Valid</h4>
-                            <p>Creation Time: @_referenceTokenData.CreationTime UTC</p>
-                            <p>Expiration Time: @_referenceTokenData.Expiration UTC</p>
-                        </div>
-                        break;
-                    case ReferenceTokenDataModel.Status.Expired:
-                        <div class="alert alert-danger" role="alert">
-                            <h4 class="alert-heading">Expired</h4>
-                            <p>Creation Time: @_referenceTokenData.CreationTime UTC</p>
-                            <p>Expiration Time: @_referenceTokenData.Expiration UTC</p>
-                        </div>
-                        break;
-                }
+                <ReferenceTokenStatus Status="@_status" ReferenceTokenData="@_referenceTokenData"></ReferenceTokenStatus>
             </div>
         </div>
     </TabPane>

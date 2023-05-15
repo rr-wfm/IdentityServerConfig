@@ -1,0 +1,23 @@
+@using IdentityServerConfig.Models
+
+@if (!Status.Equals(ReferenceTokenDataModel.Status.NotChecked))
+{
+    <div class="alert @(Status.Equals(ReferenceTokenDataModel.Status.Active) ? "alert-success" : "alert-danger") " role="alert">
+        <h4 class="alert-heading">@Status.ToString()</h4>
+        @if (Status.Equals(ReferenceTokenDataModel.Status.Invalid))
+        {
+            <p>The Reference Token for @ReferenceTokenData.ClientId is invalid</p>
+        }
+        else
+        {
+            <p>Creation Time: @ReferenceTokenData.CreationTime UTC</p>
+            <p>Expiration Time: @ReferenceTokenData.Expiration UTC</p>
+        }
+    </div>
+}
+@code{
+    [Parameter]
+    public ReferenceTokenDataModel ReferenceTokenData { get; set; }
+    [Parameter]
+    public ReferenceTokenDataModel.Status Status { get; set; }
+}
