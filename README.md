@@ -20,6 +20,23 @@ dotnet user-secrets set ConnectionStrings:Operational <your-connection-string>
 
 By default it is assumed that IdentityServer configuration is stored in the `Configuration` schema within the database, but this can be configured by setting the `ConfigurationSchema` configuration setting in `appsettings.Development.json`
 
+### Audit logs
+
+IdentityServerConfig also keeps a log of the changes that are made by users. This is stored in the `IdentityServerConfig` schema within the database. The schema can be stored in the same database as the IdentityServer. 
+
+You will need to set the connection string using the [.NET's user secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows) feature:
+
+```bash
+dotnet user-secrets set ConnectionStrings:AuditLog <your-connection-string>
+```
+
+To create the database schema and the needed table, you can use the following command:
+```bash
+ dotnet ef database update --context AuditContext
+ ```
+This will create the schema in the database specified in the connection string.
+
+
 ## Configuring authentication
 Out-of-the-box this application uses OpenID Connect for authentication using Duende's IdentityServer [demo instance](https://demo.duendesoftware.com/). This is fine for development, but in most cases you'll want to override the configuration to point to your own instance of IdentityServer.
 
