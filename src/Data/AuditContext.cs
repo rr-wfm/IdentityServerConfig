@@ -2,7 +2,7 @@ using IdentityServerConfig.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace IdentityServerConfig.DAL;
+namespace IdentityServerConfig.Data;
 
 public class AuditContext : DbContext
 {

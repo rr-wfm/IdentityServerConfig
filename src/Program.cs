@@ -1,6 +1,6 @@
 using Duende.IdentityServer.EntityFramework.Storage;
 using IdentityServerConfig.Services;
-using IdentityServerConfig.DAL;
+using IdentityServerConfig.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;

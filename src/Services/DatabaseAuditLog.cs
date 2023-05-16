@@ -1,4 +1,4 @@
-using IdentityServerConfig.DAL;
+using IdentityServerConfig.Data;
 using IdentityServerConfig.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 
