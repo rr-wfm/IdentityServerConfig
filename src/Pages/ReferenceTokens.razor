@@ -6,6 +6,7 @@
 @inject PersistedGrantDbContext persistedGrantDbContext
 @inject ConfigurationDbContext configurationDbContext
 @inject IReferenceTokenValidator referenceTokenValidator
+@inject IRevoker revoker
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -35,7 +36,7 @@
                         @{
                             if (IsActive(token.Expiration))
                             {
-                                <button class="btn btn-sm btn-danger" role="button">Revoke</button>
+                                <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => RevokeReferenceToken(token.Id))">Revoke</button>
                             }
                             else
                             {
@@ -88,5 +89,10 @@
     private void CheckReferenceToken(EditContext editContext)
     {
         _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
+    }
+    
+    private void RevokeReferenceToken(long referenceTokenId)
+    {
+        revoker.Revoke(referenceTokenId);
     }
 }

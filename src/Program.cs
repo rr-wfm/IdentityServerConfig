@@ -13,6 +13,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddScoped<IReferenceTokenValidator, ReferenceTokenValidator>();
+builder.Services.AddScoped<IRevoker, ReferenceTokenRevoker>();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
