@@ -6,7 +6,7 @@
 @inject PersistedGrantDbContext persistedGrantDbContext
 @inject ConfigurationDbContext configurationDbContext
 @inject IReferenceTokenValidator referenceTokenValidator
-@inject IAuditLog databaseAuditLog
+@inject IAuditLog auditLog
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -88,7 +88,7 @@
     
     private void CheckReferenceToken(EditContext editContext)
     {
-        databaseAuditLog.Log("ReferenceTokenChecked");
+        auditLog.Log("ReferenceTokenChecked");
         _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
 }
