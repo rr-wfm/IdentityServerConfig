@@ -1,24 +1,27 @@
+using System.Security.Claims;
 using IdentityServerConfig.Data;
 using IdentityServerConfig.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace IdentityServerConfig.Services;
 
-public class DatabaseAuditLog : IDatabaseAuditLog
+public class DatabaseAuditLog : IAuditLog
 {
     private readonly AuditContext _auditContext;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
-    
-    public DatabaseAuditLog(AuditContext auditContext, AuthenticationStateProvider authenticationStateProvider)
+    private readonly ILogger _logger;
+
+    public DatabaseAuditLog(AuditContext auditContext, AuthenticationStateProvider authenticationStateProvider, ILogger<DatabaseAuditLog> logger)
     {
         _auditContext = auditContext;
         _authenticationStateProvider = authenticationStateProvider;
+        _logger = logger;
     }
     
-    public int Log(string action)
+    public void Log(string action)
     {
         var user = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User;
-        var userId = user.Claims.FirstOrDefault(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"))?.Value;
+        var userId = user.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
         var userName = user.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
 
         if (userId == null || userName == null)
@@ -33,6 +36,10 @@ public class DatabaseAuditLog : IDatabaseAuditLog
         };
         
         _auditContext.AuditLogs.Add(audit);
-        return _auditContext.SaveChanges();
+        var result = _auditContext.SaveChanges();
+        
+        if (result != 1)
+            _logger.LogError("Audit log failed to save");
+        
     }
 }

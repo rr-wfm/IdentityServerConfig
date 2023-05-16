@@ -10,11 +10,13 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 var openIdConnectConfiguration = builder.Configuration.GetSection("OpenIdConnect");
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddScoped<IReferenceTokenValidator, ReferenceTokenValidator>();
-builder.Services.AddScoped<IDatabaseAuditLog, DatabaseAuditLog>();
+builder.Services.AddScoped<IAuditLog, DatabaseAuditLog>();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
