@@ -33,16 +33,24 @@
                         }
                     </TemplateColumn>
                     <TemplateColumn Context="token">
-                        @{
-                            if (IsActive(token.Expiration))
-                            {
-                                <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => OpenRevokeDialog(token.Id, token.ClientId))">Revoke</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-sm btn-danger" role="button" disabled>Revoke</button>
-                            }
-                        }
+                        <AuthorizeView Policy="ReferenceTokenRevoke">
+                            <Authorized>
+                                @{
+                                    if (IsActive(token.Expiration))
+                                    {
+                                        <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => OpenRevokeDialog(token.Id, token.ClientId))">Revoke</button>
+                                    }
+                                }
+                            </Authorized>
+                            <NotAuthorized>
+                                @{
+                                    if (IsActive(token.Expiration))
+                                    {
+                                        <button class="btn btn-sm btn-danger" role="button" disabled>Revoke</button>
+                                    }
+                                }
+                            </NotAuthorized>
+                        </AuthorizeView>
                     </TemplateColumn>
                 </QuickGrid>
             </div>
@@ -79,11 +87,10 @@
 @if (RevokeDialogOpen)
 {
     <ModalDialog
-        Title="Are you sure?"
-        Message=@string.Concat("Are you sure you want to revoke the reference token for ", _clientIdToRevoke, "?")
-        OnClose="@OnRevokeDialogClose"
-        DialogType="ModalDialog.ModalDialogType.RevokeDelete"/>
-    
+                Title="Are you sure?"
+                Message=@string.Concat("Are you sure you want to revoke the reference token for ", _clientIdToRevoke, "?")
+                OnClose="@OnRevokeDialogClose"
+                DialogType="ModalDialog.ModalDialogType.RevokeDelete"/>
 }
 
 @code {
@@ -92,7 +99,7 @@
 
     private bool RevokeDialogOpen { get; set; }
     private long _referenceTokenIdToRevoke;
-    private string _clientIdToRevoke; 
+    private string _clientIdToRevoke;
 
     public static bool IsActive(DateTime? expirationDate)
     {
@@ -119,4 +126,5 @@
         _referenceTokenIdToRevoke = referenceTokenId;
         RevokeDialogOpen = true;
     }
+
 }
