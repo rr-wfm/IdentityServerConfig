@@ -30,11 +30,7 @@ You will need to set the connection string using the [.NET's user secrets](https
 dotnet user-secrets set ConnectionStrings:AuditLog <your-connection-string>
 ```
 
-To create the database schema and the needed table, you can use the following command:
-```bash
- dotnet ef database update --context AuditContext
- ```
-This will create the schema in the database specified in the connection string.
+To create the audit log table, run the `IdentityServerConfig.Migrations` project. This will create the table in the database.
 
 
 ## Configuring authentication
