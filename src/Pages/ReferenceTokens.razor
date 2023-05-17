@@ -17,9 +17,9 @@
         <div class="row">
             <div class="col-6">
                 <QuickGrid Items='persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
-                    <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"></PropertyColumn>
+                    <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"/>
+                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"/>
+                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"/>
                     <TemplateColumn Title="Status" Context="token">
                         @{
                             if (IsActive(token.Expiration))
@@ -36,7 +36,7 @@
                         @{
                             if (IsActive(token.Expiration))
                             {
-                                <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => RevokeReferenceToken(token.Id))">Revoke</button>
+                                <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => OpenRevokeDialog(token.Id, token.ClientId))">Revoke</button>
                             }
                             else
                             {
@@ -71,28 +71,52 @@
                 </EditForm>
             </div>
             <div class="col-3">
-                <ReferenceTokenStatus Model="@_referenceTokenData"></ReferenceTokenStatus>
+                <ReferenceTokenStatus Model="@_referenceTokenData"/>
             </div>
         </div>
     </TabPane>
 </div>
+@if (RevokeDialogOpen)
+{
+    <ModalDialog
+        Title="Are you sure?"
+        Message=@string.Concat("Are you sure you want to revoke the reference token for ", _clientIdToRevoke, "?")
+        OnClose="@OnRevokeDialogClose"
+        DialogType="ModalDialog.ModalDialogType.RevokeDelete"/>
+    
+}
 
 @code {
     readonly CheckReferenceTokenModel _checkTokenModel = new();
     ReferenceTokenDataModel _referenceTokenData = new();
-    
+
+    private bool RevokeDialogOpen { get; set; }
+    private long _referenceTokenIdToRevoke;
+    private string _clientIdToRevoke; 
+
     public static bool IsActive(DateTime? expirationDate)
     {
         return expirationDate == null || expirationDate >= DateTime.UtcNow;
     }
-    
+
     private void CheckReferenceToken(EditContext editContext)
     {
         _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
-    
-    private void RevokeReferenceToken(long referenceTokenId)
+
+    private void OnRevokeDialogClose(bool accepted)
     {
-        revoker.Revoke(referenceTokenId);
+        if (accepted)
+        {
+            revoker.Revoke(_referenceTokenIdToRevoke);
+        }
+        RevokeDialogOpen = false;
+    }
+
+    private void OpenRevokeDialog(long referenceTokenId, string clientId)
+    {
+        _clientIdToRevoke = clientId;
+        _referenceTokenIdToRevoke = referenceTokenId;
+        RevokeDialogOpen = true;
     }
 }
