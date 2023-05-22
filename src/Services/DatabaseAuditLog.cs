@@ -18,7 +18,7 @@ public class DatabaseAuditLog : IAuditLog
         _logger = logger;
     }
     
-    public void Log(string action)
+    public void Log(string action, IDictionary<string,string> data)
     {
         var user = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User;
         var userId = user.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
@@ -32,7 +32,8 @@ public class DatabaseAuditLog : IAuditLog
             UserId = userId,
             UserName = userName,
             Action = action,
-            Timestamp = DateTime.Now
+            Timestamp = DateTime.Now,
+            Data = data
         };
         
         _auditContext.AuditLogs.Add(audit);

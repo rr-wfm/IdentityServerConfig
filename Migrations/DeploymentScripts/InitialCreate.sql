@@ -42,3 +42,19 @@ GO
 
 COMMIT;
 GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [IdentityServerConfig].[AuditLog] ADD [Data] nvarchar(max) NOT NULL DEFAULT N'';
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20230517145458_AddedDataField', N'7.0.5');
+GO
+
+COMMIT;
+GO
+
+COMMIT;
+GO

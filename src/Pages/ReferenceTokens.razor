@@ -88,7 +88,13 @@
     
     private void CheckReferenceToken(EditContext editContext)
     {
-        auditLog.Log("ReferenceTokenChecked");
+        Dictionary<string, string> Data = new()
+        {
+            { "ClientId", _checkTokenModel.ClientId },
+            { "ReferenceToken", _checkTokenModel.ReferenceToken }
+        };
+        
+        auditLog.Log("ReferenceTokenChecked", Data);
         _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
 }

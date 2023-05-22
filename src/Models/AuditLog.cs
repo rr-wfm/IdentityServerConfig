@@ -7,4 +7,5 @@ public class AuditLog
     public string UserName { get; set; }
     public DateTime Timestamp { get; set; }
     public string Action { get; set; }
+    public IDictionary<string,string> Data { get; set; }
 }

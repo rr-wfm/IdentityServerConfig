@@ -2,5 +2,5 @@ namespace IdentityServerConfig.Services;
 
 public interface IAuditLog
 {
-    void Log(string action);
+    void Log(string action, IDictionary<string,string> data);
 }
