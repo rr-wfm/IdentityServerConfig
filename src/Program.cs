@@ -1,5 +1,6 @@
 using Duende.IdentityServer.EntityFramework.Storage;
 using IdentityServerConfig.Services;
+using IdentityServerConfig.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -9,10 +10,13 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 var openIdConnectConfiguration = builder.Configuration.GetSection("OpenIdConnect");
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddScoped<IReferenceTokenValidator, ReferenceTokenValidator>();
+builder.Services.AddScoped<IAuditLog, DatabaseAuditLog>();
 builder.Services.AddScoped<IRevoker, ReferenceTokenRevoker>();
 builder.Services.AddAuthentication(options =>
     {
@@ -60,6 +64,10 @@ builder.Services.AddOperationalDbContext(options =>
     options.DefaultSchema = builder.Configuration.GetValue("OperationalSchema", "Operational");
     options.ConfigureDbContext = b =>
         b.UseSqlServer(builder.Configuration.GetConnectionString("Operational"));
+});
+builder.Services.AddDbContext<AuditContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuditLog"));
 });
 
 var app = builder.Build();
