@@ -123,6 +123,13 @@
     {
         if (accepted)
         {
+            Dictionary<string, string> data = new()
+            {
+                { "ClientId", _clientIdToRevoke },
+                { "ReferenceTokenId", _referenceTokenIdToRevoke.ToString() }
+            };
+        
+            auditLog.Log("ReferenceTokenRevoke", data);
             revoker.Revoke(_referenceTokenIdToRevoke);
         }
         RevokeDialogOpen = false;
