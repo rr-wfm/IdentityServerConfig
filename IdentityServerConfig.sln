@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerConfig", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerConfig.UnitTest", "test\IdentityServerConfig.UnitTest.csproj", "{705C1CDB-0DF3-4A30-BCA7-211A3196CACA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerConfig.Migrations", "migrations\IdentityServerConfig.Migrations.csproj", "{190F93D8-48AB-4F6D-8FFC-01C78A507254}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{705C1CDB-0DF3-4A30-BCA7-211A3196CACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{705C1CDB-0DF3-4A30-BCA7-211A3196CACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{705C1CDB-0DF3-4A30-BCA7-211A3196CACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190F93D8-48AB-4F6D-8FFC-01C78A507254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190F93D8-48AB-4F6D-8FFC-01C78A507254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190F93D8-48AB-4F6D-8FFC-01C78A507254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190F93D8-48AB-4F6D-8FFC-01C78A507254}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
