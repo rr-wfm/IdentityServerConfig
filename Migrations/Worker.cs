@@ -53,8 +53,6 @@ public class Worker : BackgroundService
                     .WithTransaction()
                     .LogToConsole();
 
-                Task.Delay(10000);
-
                 var upgrader = upgradeEngineBuilder.Build();
                 _logger.LogInformation("Is upgrade required: " + upgrader.IsUpgradeRequired());
 
