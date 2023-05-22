@@ -18,26 +18,29 @@ public class DatabaseAuditLog : IAuditLog
         _logger = logger;
     }
     
-    public void Log(string action, IDictionary<string,string> data)
+    public async Task Log(string action, IDictionary<string, string> data)
     {
-        var user = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User;
+        var authenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
         var userId = user.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
         var userName = user.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
 
         if (userId == null || userName == null)
-            throw new Exception("User not found");
-        
+        {
+            throw new InvalidOperationException("User not found");
+        }
+
         var audit = new AuditLog
         {
             UserId = userId,
             UserName = userName,
             Action = action,
-            Timestamp = DateTime.Now,
+            Timestamp = DateTime.UtcNow,
             Data = data
         };
         
         _auditContext.AuditLogs.Add(audit);
-        var result = _auditContext.SaveChanges();
+        var result = await _auditContext.SaveChangesAsync();
         
         if (result != 1)
             _logger.LogError("Audit log failed to save");

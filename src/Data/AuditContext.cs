@@ -2,7 +2,6 @@ using IdentityServerConfig.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-
 namespace IdentityServerConfig.Data;
 
 public class AuditContext : DbContext
