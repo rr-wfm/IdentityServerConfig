@@ -3,10 +3,9 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["migrations/IdentityServerConfig.Migrations.csproj", "migrations/"]
-RUN dotnet restore "migrations/IdentityServerConfig.Migrations.csproj"
+COPY ["IdentityServerConfig.Migrations.csproj", "."]
+RUN dotnet restore "./IdentityServerConfig.Migrations.csproj"
 COPY . .
-WORKDIR "/src/migrations"
 RUN dotnet build "IdentityServerConfig.Migrations.csproj" -c Release -o /app/build
 
 FROM build AS publish
