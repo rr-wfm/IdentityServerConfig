@@ -45,7 +45,7 @@ stages:
         inputs:
           command: buildAndPush
           repository: 'rr/identityserverconfig-migrations'
-          dockerfile: '$(Build.SourcesDirectory)/migrations/Dockerfile'
+          dockerfile: '$(Build.SourcesDirectory)/Migrations/Dockerfile'
           containerRegistry: $(dockerRegistryServiceConnection)
           tags: |
             $(tag)
