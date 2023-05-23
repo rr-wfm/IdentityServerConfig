@@ -1,6 +1,6 @@
 namespace IdentityServerConfig.Services;
 
-public interface IRevoker
+public interface IReferenceTokenRevoker
 {
-    void Revoke(long id);
+    Task Revoke(long id, string clientId);
 }

@@ -6,8 +6,7 @@
 @inject PersistedGrantDbContext persistedGrantDbContext
 @inject ConfigurationDbContext configurationDbContext
 @inject IReferenceTokenValidator referenceTokenValidator
-@inject IRevoker revoker
-@inject IAuditLog auditLog
+@inject IReferenceTokenRevoker referenceTokenRevoker
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -85,14 +84,14 @@
         </div>
     </TabPane>
 </div>
-@if (RevokeDialogOpen)
-{
-    <ModalDialog
-                Title="Are you sure?"
-                Message=@string.Concat("Are you sure you want to revoke the reference token for ", _clientIdToRevoke, "?")
-                OnClose="@OnRevokeDialogClose"
-                DialogType="ModalDialog.ModalDialogType.RevokeDelete"/>
-}
+
+<ModalDialog
+    Title="Are you sure?"
+    Message=@string.Concat("Are you sure you want to revoke the reference token for ", _clientIdToRevoke, "?")
+    OnClose="@OnRevokeDialogClose"
+    DialogType="ModalDialogType.RevokeDelete"
+    Show="RevokeDialogOpen"/>
+
 
 @code {
     readonly CheckReferenceTokenModel _checkTokenModel = new();
@@ -109,13 +108,6 @@
 
     private void CheckReferenceToken(EditContext editContext)
     {
-        Dictionary<string, string> data = new()
-        {
-            { "ClientId", _checkTokenModel.ClientId },
-            { "ReferenceToken", _checkTokenModel.ReferenceToken }
-        };
-        
-        auditLog.Log("ReferenceTokenChecked", data);
         _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
 
@@ -123,14 +115,7 @@
     {
         if (accepted)
         {
-            Dictionary<string, string> data = new()
-            {
-                { "ClientId", _clientIdToRevoke },
-                { "ReferenceTokenId", _referenceTokenIdToRevoke.ToString() }
-            };
-        
-            auditLog.Log("ReferenceTokenRevoke", data);
-            revoker.Revoke(_referenceTokenIdToRevoke);
+            referenceTokenRevoker.Revoke(_referenceTokenIdToRevoke, _clientIdToRevoke);
         }
         RevokeDialogOpen = false;
     }
