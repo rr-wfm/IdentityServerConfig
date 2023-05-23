@@ -1,4 +1,4 @@
-namespace IdentityServerConfig.Models;
+namespace IdentityServerConfig.Components;
 
 public enum ModalDialogType
 {
