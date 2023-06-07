@@ -3,6 +3,7 @@ using DbUp.Reboot;
 using DbUp.Reboot.Engine;
 using DbUp.Reboot.ScriptProviders;
 using DbUp.Reboot.Support;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -40,6 +41,12 @@ public class Worker : BackgroundService
                     throw new ArgumentException("ConnectionString cannot be null");
                 }
                 _logger.LogError("Connection string is {ConnectionString}", connectionString);
+
+                var sqlConnection = new SqlConnection(connectionString);
+                sqlConnection.Open();
+                
+                
+                
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
                 var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
