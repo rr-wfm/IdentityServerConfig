@@ -42,11 +42,18 @@ public class Worker : BackgroundService
                 }
                 _logger.LogError("Connection string is {ConnectionString}", connectionString);
 
-                var sqlConnection = new SqlConnection(connectionString);
-                sqlConnection.Open();
-                
-                
-                
+                try
+                {
+                    var sqlConnection = new SqlConnection(connectionString);
+                    sqlConnection.Open();
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException("Could not connect to database", e);
+                }
+
+
+
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
                 var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
