@@ -30,7 +30,7 @@ public class Worker : BackgroundService
     {
         try
         {
-            _logger.LogInformation("Starting migration");
+            _logger.LogError("Starting migration");
 
             await Task.Run(() =>
             {
@@ -39,7 +39,7 @@ public class Worker : BackgroundService
                 {
                     throw new ArgumentException("ConnectionString cannot be null");
                 }
-                _logger.LogInformation("Connection string is {ConnectionString}", connectionString);
+                _logger.LogError("Connection string is {ConnectionString}", connectionString);
 
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
