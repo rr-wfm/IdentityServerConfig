@@ -28,6 +28,7 @@ public class Worker : BackgroundService
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogError("before try catch");
         try
         {
             _logger.LogError("Starting migration");
@@ -40,7 +41,7 @@ public class Worker : BackgroundService
                     throw new ArgumentException("ConnectionString cannot be null");
                 }
                 _logger.LogError("Connection string is {ConnectionString}", connectionString);
-
+                throw new Exception("Connection string is " + connectionString);
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
                 var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
