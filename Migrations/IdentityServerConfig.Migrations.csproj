@@ -32,10 +32,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="DeploymentScripts\InitialCreate.sql" />
-      <EmbeddedResource Include="DeploymentScripts\InitialCreate.sql">
+      <None Remove="DeploymentScripts/InitialCreate.sql" />
+      <EmbeddedResource Include="DeploymentScripts/InitialCreate.sql">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
     </ItemGroup>
+
+
 
 </Project>
