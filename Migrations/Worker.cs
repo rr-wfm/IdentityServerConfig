@@ -31,7 +31,7 @@ public class Worker : BackgroundService
     {
         try
         {
-            _logger.LogError("Starting migration");
+            _logger.LogInformation("Starting migration");
 
             await Task.Run(() =>
             {
@@ -40,18 +40,13 @@ public class Worker : BackgroundService
                 {
                     throw new ArgumentException("ConnectionString cannot be null");
                 }
-                _logger.LogError("Connection string is {ConnectionString}", connectionString);
+                var connectionStringPasswordHidden =
+                    new SqlConnectionStringBuilder(connectionString)
+                    {
+                        Password = "********"
+                    };
+                _logger.LogInformation("Connection string is {ConnectionStringPasswordHidden}", connectionStringPasswordHidden.ConnectionString);
 
-                try
-                {
-                    var sqlConnection = new SqlConnection(connectionString);
-                    sqlConnection.Open();
-                }
-                catch (Exception e)
-                {
-                    throw new ArgumentException("Could not connect to database", e);
-                }
-                
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
                 var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
