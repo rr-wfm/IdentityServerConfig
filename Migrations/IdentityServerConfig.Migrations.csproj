@@ -34,7 +34,7 @@
     <ItemGroup>
       <None Remove="DeploymentScripts\InitialCreate.sql" />
       <EmbeddedResource Include="DeploymentScripts\InitialCreate.sql">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
     </ItemGroup>
 
