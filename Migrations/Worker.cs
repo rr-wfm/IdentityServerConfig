@@ -51,6 +51,25 @@ public class Worker : BackgroundService
 
                 var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
                 _logger.LogInformation(path);
+                
+                //check if deployment scripts folder exists
+                if (!Directory.Exists(Path.Combine(path, "DeploymentScripts")))
+                {
+                    _logger.LogError("DeploymentScripts folder not found");
+                    Environment.ExitCode = 2;
+                    _hostApplicationLifetime.StopApplication();
+                    return;
+                }
+                
+                //check if deployment scripts contains InitialCreate.sql
+                if (!File.Exists(Path.Combine(path, "DeploymentScripts", "InitialCreate.sql")))
+                {
+                    _logger.LogError("InitialCreate.sql not found");
+                    Environment.ExitCode = 2;
+                    _hostApplicationLifetime.StopApplication();
+                    return;
+                }
+                
                 var upgradeEngineBuilder = DeployChanges.To
                     .SqlDatabase(connectionString, null)
                     .WithScriptsFromFileSystem(path,
