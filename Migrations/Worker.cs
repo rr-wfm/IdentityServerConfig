@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using DbUp.Reboot;
 using DbUp.Reboot.Engine;
 using DbUp.Reboot.ScriptProviders;
@@ -49,7 +48,7 @@ public class Worker : BackgroundService
 
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
-                var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
+                var path = Path.GetDirectoryName(Environment.CurrentDirectory);
                 _logger.LogInformation(path);
                 
                 //check if deployment scripts folder exists
