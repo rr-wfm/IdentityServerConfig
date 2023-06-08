@@ -20,15 +20,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="DeploymentScripts\InitialCreate.sql">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="DeploymentScripts\InitialCreate.sql" />
+      <EmbeddedResource Include="DeploymentScripts\InitialCreate.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
