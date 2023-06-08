@@ -48,7 +48,7 @@ public class Worker : BackgroundService
 
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
-                var path = Path.GetDirectoryName(Environment.CurrentDirectory);
+                var path = Environment.CurrentDirectory;
                 _logger.LogInformation(path);
                 
                 //check if deployment scripts folder exists
