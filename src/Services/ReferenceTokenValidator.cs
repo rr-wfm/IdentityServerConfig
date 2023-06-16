@@ -9,11 +9,9 @@ namespace IdentityServerConfig.Services;
 public class ReferenceTokenValidator : IReferenceTokenValidator
 {
     private readonly PersistedGrantDbContext _persistedGrantDbContext;
-    private readonly IAuditLog _auditLog;
-    public ReferenceTokenValidator(PersistedGrantDbContext persistedGrantDbContext, IAuditLog auditLog)
+    public ReferenceTokenValidator(PersistedGrantDbContext persistedGrantDbContext)
     {
         _persistedGrantDbContext = persistedGrantDbContext;
-        _auditLog = auditLog;
     }
     
     public ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel)
@@ -24,8 +22,6 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
             { "ReferenceToken", checkReferenceTokenModel.ReferenceToken }
         };
 
-        _auditLog.Log("ReferenceTokenChecked", data);
-        
         ReferenceTokenDataModel returnValue = new();
         
         //hash the token

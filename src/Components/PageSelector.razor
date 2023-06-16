@@ -1,0 +1,24 @@
+<Paginator Value="@Pagination"/>
+<div class="page-size-chooser">
+    Items per page:
+    <select class="form-select-sm" onchange="@OnItemsPerPageChanged" value="@Pagination.ItemsPerPage">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
+
+@code {
+
+    [Parameter]
+    public PaginationState Pagination { get; set; }
+
+    private void OnItemsPerPageChanged(ChangeEventArgs e)
+    {
+        Pagination.ItemsPerPage = int.Parse(e.Value.ToString());
+        Pagination.SetCurrentPageIndexAsync(0);
+    }
+
+}

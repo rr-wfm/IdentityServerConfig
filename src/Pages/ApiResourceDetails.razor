@@ -43,7 +43,7 @@ else
                 </div>
             </div>
             <div class="tab-pane fade show" id="secrets-tab-pane" role="tabpanel" aria-labelledby="secrets-tab" tabindex="1">
-                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table">
+                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table"Pagination="@_paginationSecrets">
                     <PropertyColumn Property="@(s => s.Description)" />
                     <TemplateColumn Title="Type">
                         <ChildContent Context="secret">
@@ -53,17 +53,20 @@ else
                     <PropertyColumn Property="@(s => s.Created)" Title="Created (UTC)" />
                     <PropertyColumn Property="@(s => s.Expiration)" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationSecrets"></PageSelector> 
             </div>
             <div class="tab-pane fade show" id="properties-tab-pane" role="tabpanel" aria-labelledby="properties-tab" tabindex="2">
-                <QuickGrid Items="@SelectedApiResource.Properties.AsQueryable()" Class="table table-hover table-striped">
+                <QuickGrid Items="@SelectedApiResource.Properties.AsQueryable()" Class="table table-hover table-striped"Pagination="@_paginationProperties">
                     <PropertyColumn Property="@(s => s.Key)" />
                     <PropertyColumn Property="@(s => s.Value)" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationProperties"></PageSelector>
             </div>
             <div class="tab-pane fade show" id="scopes-tab-pane" role="tabpanel" aria-labelledby="scopes-tab" tabindex="3">
-                <QuickGrid Items="@SelectedApiResource.Scopes.AsQueryable()" Class="table table-hover table-striped">
+                <QuickGrid Items="@SelectedApiResource.Scopes.AsQueryable()" Class="table table-hover table-striped"Pagination="@_paginationScopes">
                     <PropertyColumn Property="s => s.Scope" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationScopes"></PageSelector>
             </div>
         </div>
     </EntityProvider>
@@ -73,14 +76,19 @@ else
     [Parameter]
     public int ApiResourceId { get; set; }
 
-    public ApiResource? SelectedApiResource { get; private set; }
-
-    protected async override Task OnParametersSetAsync()
+    private ApiResource? SelectedApiResource { get; set; }
+    private readonly PaginationState _paginationSecrets = new() {ItemsPerPage = 10};
+    private readonly PaginationState _paginationScopes = new() {ItemsPerPage = 10};
+    private readonly PaginationState _paginationProperties = new() {ItemsPerPage = 10};
+    protected override async Task OnParametersSetAsync()
     {
         SelectedApiResource = await DbContext.ApiResources.Include(a => a.Secrets)
                                                           .Include(a => a.Properties)
                                                           .Include(a => a.Scopes)
                                                           .FirstOrDefaultAsync(a => a.Id == ApiResourceId);
     }
+
+
+
 }
 

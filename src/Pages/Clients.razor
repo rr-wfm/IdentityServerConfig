@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @inject ConfigurationDbContext DbContext;
 
-<QuickGrid Items="@DbContext.Clients" Class="table table-hover table-striped">
+<QuickGrid Items="@DbContext.Clients" Class="table table-hover table-striped" Pagination="@_pagination">
     <PropertyColumn Property="c => c.ClientName" Title="Client Name" Sortable="true" IsDefaultSort="SortDirection.Ascending" />
     <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true" />
     <TemplateColumn Title="Protocol Type">
@@ -18,3 +18,8 @@
         <a href="clients/@context.Id" class="btn btn-link btn-sm" role="button">Details</a>
     </TemplateColumn>
 </QuickGrid>
+<PageSelector Pagination="_pagination"/>
+
+@code {
+    private readonly PaginationState _pagination = new() {ItemsPerPage = 10};
+}
