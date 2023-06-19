@@ -43,7 +43,7 @@ else
                 </div>
             </div>
             <div class="tab-pane fade show" id="secrets-tab-pane" role="tabpanel" aria-labelledby="secrets-tab" tabindex="1">
-                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table"Pagination="@_paginationSecrets">
+                <QuickGrid Items="@SelectedApiResource.Secrets.AsQueryable()" Class="table" Pagination="@_paginationSecrets">
                     <PropertyColumn Property="@(s => s.Description)" />
                     <TemplateColumn Title="Type">
                         <ChildContent Context="secret">
