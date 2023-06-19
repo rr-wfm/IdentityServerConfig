@@ -1,7 +1,8 @@
 ﻿@page "/api-resources"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "ApiResourceView")]
 @inject ConfigurationDbContext DbContext;
 
+<PageTitle>Api Resources - IdentityServerConfig</PageTitle>
 <QuickGrid Items="@DbContext.ApiResources" Class="table table-hover table-striped" Pagination="@_pagination">
     <PropertyColumn Property="a => a.Name" Title="Name" Sortable="true" IsDefaultSort="SortDirection.Ascending" />
     <PropertyColumn Property="a => a.DisplayName" Title="Display Name" Sortable="true" />

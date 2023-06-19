@@ -1,7 +1,8 @@
 ﻿@page "/api-resources/{ApiResourceId:int}"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "ApiResourceView")]
 @inject ConfigurationDbContext DbContext;
 
+<PageTitle>Api Resources Details - IdentityServerConfig</PageTitle>
 @if (SelectedApiResource == null)
 {
     <p class="placeholder-glow">

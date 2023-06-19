@@ -68,8 +68,19 @@ identity-server-config
 identity-server-config.reference-token
 identity-server-config.reference-token:view
 identity-server-config.reference-token:revoke
+identity-server-config.client
+identity-server-config.client:view
+identity-server-config.api-resource
+identity-server-config.api-resource:view
+identity-server-config.scope
+identity-server-config.scope:view
+```
+
+For future development, the following claims types are reserved:
+```
 identity-server-config.client-secret
 identity-server-config.client-secret:create
 identity-server-config.client-secret:delete
 ```
+These claims types are not yet implemented, but will be used to authorize the client secrets page.
 

@@ -1,7 +1,8 @@
 ﻿@page "/clients/{ClientId:int}"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "ClientView")]
 @inject ConfigurationDbContext DbContext;
 
+<PageTitle>Client Details - IdentityServerConfig</PageTitle>
 @if (SelectedClient == null)
 {
     <p class="placeholder-glow">

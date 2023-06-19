@@ -81,6 +81,48 @@ public class AuthorizationPoliciesTests
         var result = await _authorizationService.AuthorizeAsync(user, null, policy.Requirements);
         result.Succeeded.Should().Be(expectedResult);
     }
+
+    [TestCase("identity-server-config.client:view", true)]
+    [TestCase("identity-server-config.client", true)]
+    [TestCase("identity-server-config", true)]
+    [TestCase("identity-server-config.client:delete", false)]
+    public async Task TestViewClient(string userClaim, bool expectedResult)
+    {
+        var claim = new Claim(userClaim, "true");
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new[] {claim}));
+        
+        var policy = await _authorizationPolicyProvider.GetPolicyAsync("ClientView");
+        var result = await _authorizationService.AuthorizeAsync(user, null, policy.Requirements);
+        result.Succeeded.Should().Be(expectedResult);
+    }
+    
+    [TestCase("identity-server-config.api-resource:view", true)]
+    [TestCase("identity-server-config.api-resource", true)]
+    [TestCase("identity-server-config", true)]
+    [TestCase("identity-server-config.api-resource:delete", false)]
+    public async Task TestViewApiResource(string userClaim, bool expectedResult)
+    {
+        var claim = new Claim(userClaim, "true");
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new[] {claim}));
+        
+        var policy = await _authorizationPolicyProvider.GetPolicyAsync("ApiResourceView");
+        var result = await _authorizationService.AuthorizeAsync(user, null, policy.Requirements);
+        result.Succeeded.Should().Be(expectedResult);
+    }
+    
+    [TestCase("identity-server-config.scope:view", true)]
+    [TestCase("identity-server-config.scope", true)]
+    [TestCase("identity-server-config", true)]
+    [TestCase("identity-server-config.scope:delete", false)]
+    public async Task TestViewScope(string userClaim, bool expectedResult)
+    {
+        var claim = new Claim(userClaim, "true");
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new[] {claim}));
+        
+        var policy = await _authorizationPolicyProvider.GetPolicyAsync("ScopeView");
+        var result = await _authorizationService.AuthorizeAsync(user, null, policy.Requirements);
+        result.Succeeded.Should().Be(expectedResult);
+    }
     
 }
 
