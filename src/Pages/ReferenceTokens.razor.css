@@ -1,0 +1,9 @@
+::deep  .quickgrid[theme=default] > tbody > tr > td {
+    height: 48px;
+    padding: 0.1rem calc(0.4rem + var(--col-gap)) 0.1rem 0.4rem;
+    vertical-align: middle;
+}
+::deep .Revoke {
+    width: 13%;
+}
+

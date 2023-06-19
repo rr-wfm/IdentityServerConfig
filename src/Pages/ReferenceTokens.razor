@@ -6,7 +6,7 @@
 @inject PersistedGrantDbContext persistedGrantDbContext
 @inject ConfigurationDbContext configurationDbContext
 @inject IReferenceTokenValidator referenceTokenValidator
-@inject IAuditLog auditLog
+@inject IReferenceTokenRevoker referenceTokenRevoker
 
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
@@ -15,11 +15,11 @@
 <div class="tab-content" id="referenceTokenTabsContent">
     <TabPane TabId="general" TabIndex="0" IsActive="true">
         <div class="row">
-            <div class="col-6">
-                <QuickGrid Items='persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"))' class="table table-hover table-striped">
-                    <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"></PropertyColumn>
+            <div>
+                <QuickGrid Items="@persistedGrants" @ref="grid" class="table table-hover table-striped" Pagination="@_pagination" >
+                    <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"/>
+                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"/>
+                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"/>
                     <TemplateColumn Title="Status" Context="token">
                         @{
                             if (IsActive(token.Expiration))
@@ -32,19 +32,28 @@
                             }
                         }
                     </TemplateColumn>
-                    <TemplateColumn Context="token">
-                        @{
-                            if (IsActive(token.Expiration))
-                            {
-                                <button class="btn btn-sm btn-danger" role="button">Revoke</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-sm btn-danger" role="button" disabled>Revoke</button>
-                            }
-                        }
+                    <TemplateColumn Context="token"  Class="Revoke">
+                        <AuthorizeView Policy="ReferenceTokenRevoke">
+                            <Authorized>
+                                @{
+                                    if (IsActive(token.Expiration))
+                                    {
+                                        <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => OpenRevokeDialog(token.Id, token.ClientId))">Revoke</button>
+                                    }
+                                }
+                            </Authorized>
+                            <NotAuthorized>
+                                @{
+                                    if (IsActive(token.Expiration))
+                                    {
+                                        <button class="btn btn-sm btn-danger" role="button" disabled>Revoke</button>
+                                    }
+                                }
+                            </NotAuthorized>
+                        </AuthorizeView>
                     </TemplateColumn>
                 </QuickGrid>
+                <PageSelector Pagination="_pagination"/>
             </div>
         </div>
     </TabPane>
@@ -71,30 +80,61 @@
                 </EditForm>
             </div>
             <div class="col-3">
-                <ReferenceTokenStatus Model="@_referenceTokenData"></ReferenceTokenStatus>
+                <ReferenceTokenStatus Model="@_referenceTokenData"/>
             </div>
         </div>
     </TabPane>
 </div>
 
+<ModalDialog
+    Title="Are you sure?"
+    Message=@string.Concat("Are you sure you want to revoke the reference token for ", _clientIdToRevoke, "?")
+    OnClose="@OnRevokeDialogClose"
+    DialogType="ModalDialogType.RevokeDelete"
+    Show="RevokeDialogOpen"/>
+
+
 @code {
     readonly CheckReferenceTokenModel _checkTokenModel = new();
     ReferenceTokenDataModel _referenceTokenData = new();
-    
+
+    private bool RevokeDialogOpen { get; set; }
+    private long _referenceTokenIdToRevoke;
+    private string _clientIdToRevoke = string.Empty;
+    private readonly PaginationState _pagination = new() {ItemsPerPage = 10};
+    private QuickGrid<PersistedGrant> grid;
+    private IQueryable<PersistedGrant> persistedGrants;
+
     public static bool IsActive(DateTime? expirationDate)
     {
         return expirationDate == null || expirationDate >= DateTime.UtcNow;
     }
-    
+
     private void CheckReferenceToken(EditContext editContext)
     {
-        Dictionary<string, string> data = new()
-        {
-            { "ClientId", _checkTokenModel.ClientId },
-            { "ReferenceToken", _checkTokenModel.ReferenceToken }
-        };
-        
-        auditLog.Log("ReferenceTokenChecked", data);
         _referenceTokenData = referenceTokenValidator.Validate(_checkTokenModel);
     }
+
+    private async Task OnRevokeDialogClose(bool accepted)
+    {
+        if (accepted)
+        {
+            await referenceTokenRevoker.Revoke(_referenceTokenIdToRevoke, _clientIdToRevoke);
+            await grid.RefreshDataAsync();
+        }
+        RevokeDialogOpen = false;
+    }
+
+    private void OpenRevokeDialog(long referenceTokenId, string clientId)
+    {
+        _clientIdToRevoke = clientId;
+        _referenceTokenIdToRevoke = referenceTokenId;
+        RevokeDialogOpen = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        persistedGrants = persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"));
+    }
+
 }

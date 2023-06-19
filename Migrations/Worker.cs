@@ -3,6 +3,7 @@ using DbUp.Reboot;
 using DbUp.Reboot.Engine;
 using DbUp.Reboot.ScriptProviders;
 using DbUp.Reboot.Support;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -39,11 +40,16 @@ public class Worker : BackgroundService
                 {
                     throw new ArgumentException("ConnectionString cannot be null");
                 }
-                _logger.LogInformation("Connection string is {ConnectionString}", connectionString);
+                var connectionStringPasswordHidden =
+                    new SqlConnectionStringBuilder(connectionString)
+                    {
+                        Password = "********"
+                    };
+                _logger.LogInformation("Connection string is {ConnectionStringPasswordHidden}", connectionStringPasswordHidden.ConnectionString);
 
                 EnsureDatabase.For.SqlDatabase(connectionString);
 
-                var path = Path.GetDirectoryName(Process.GetCurrentProcess()?.MainModule?.FileName);
+                var path = Environment.CurrentDirectory;
                 _logger.LogInformation(path);
                 var upgradeEngineBuilder = DeployChanges.To
                     .SqlDatabase(connectionString, null)

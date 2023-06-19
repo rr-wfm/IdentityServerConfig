@@ -67,7 +67,7 @@ else
                 </div>
             </TabPane>
             <TabPane TabId="secrets" TabIndex="1">
-                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table">
+                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table" Pagination="_paginationSecrets">
                     <PropertyColumn Property="@(s => s.Description)" />
                     <TemplateColumn Title="Type">
                         <ChildContent Context="secret">
@@ -77,20 +77,23 @@ else
                     <PropertyColumn Property="@(s => s.Created)" Title="Created (UTC)"/>
                     <PropertyColumn Property="@(s => s.Expiration)" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationSecrets"></PageSelector>
             </TabPane>
             <TabPane TabId="properties" TabIndex="2">
-                <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped">
+                <QuickGrid Items="@SelectedClient.Properties.AsQueryable()" Class="table table-hover table-striped" Pagination="_paginationProperties">
                     <PropertyColumn Property="s => s.Key" />
                     <PropertyColumn Property="s => s.Value" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationProperties"></PageSelector>
             </TabPane>
             <TabPane TabId="scopes" TabIndex="3">
-                <QuickGrid Items="@SelectedClient.AllowedScopes.AsQueryable()" Class="table table-hover table-striped">
+                <QuickGrid Items="@SelectedClient.AllowedScopes.AsQueryable()" Class="table table-hover table-striped" Pagination="_paginationScopes">
                     <PropertyColumn Property="s => s.Scope" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationScopes"></PageSelector>
             </TabPane>
             <TabPane TabId="claims" TabIndex="4">
-                <QuickGrid Items="@SelectedClient.Claims.AsQueryable()" Class="table table-hover table-striped">
+                <QuickGrid Items="@SelectedClient.Claims.AsQueryable()" Class="table table-hover table-striped" Pagination="_paginationClaims">
                     <TemplateColumn Title="Prefix">
                         <ChildContent Context="secret">
                             @SelectedClient.ClientClaimsPrefix
@@ -99,6 +102,7 @@ else
                     <PropertyColumn Property="c => c.Type" />
                     <PropertyColumn Property="c => c.Value" />
                 </QuickGrid>
+                <PageSelector Pagination="_paginationClaims"></PageSelector>
             </TabPane>
         </div>
     </EntityProvider>
@@ -107,10 +111,14 @@ else
 @code {
     [Parameter]
     public int ClientId { get; set; }
+    
+    private Client? SelectedClient { get; set; }
+    private readonly PaginationState _paginationSecrets = new() {ItemsPerPage = 10};
+    private readonly PaginationState _paginationScopes = new() {ItemsPerPage = 10};
+    private readonly PaginationState _paginationProperties = new() {ItemsPerPage = 10};
+    private readonly PaginationState _paginationClaims = new() {ItemsPerPage = 10};
 
-    public Client? SelectedClient { get; private set; }
-
-    protected async override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
         SelectedClient = await DbContext.Clients.Include(c => c.RedirectUris)
                                                 .Include(c => c.PostLogoutRedirectUris)

@@ -11,9 +11,7 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '5af9a6c8-893e-4af7-9a1c-2bd68a978792'
-  imageRepository: 'rr/identityserverconfig'
   containerRegistry: 'rrwfm.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/src/Dockerfile'
   tag: '$(Build.BuildId)'
 
   # Agent VM image name
@@ -32,8 +30,22 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
+        repository: 'rr/identityserverconfig'
+        dockerfile: '$(Build.SourcesDirectory)/src/Dockerfile'
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+  - job: BuildMigrations
+    displayName: Build Migrations
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: Docker@2
+        displayName: Build and push an image to container registry
+        inputs:
+          command: buildAndPush
+          repository: 'rr/identityserverconfig-migrations'
+          dockerfile: '$(Build.SourcesDirectory)/Migrations/Dockerfile'
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: |
+            $(tag)

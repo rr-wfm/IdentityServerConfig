@@ -17,6 +17,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddScoped<IReferenceTokenValidator, ReferenceTokenValidator>();
 builder.Services.AddScoped<IAuditLog, DatabaseAuditLog>();
+builder.Services.AddScoped<IReferenceTokenRevoker, ReferenceTokenRevoker>();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;

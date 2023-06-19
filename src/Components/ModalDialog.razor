@@ -1,0 +1,57 @@
+@if (Show)
+{
+    <div class="modal fade show" id="confirmationModal" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Title</h4>
+                    <button type="button" class="close btn" @onclick="@ModalCancel">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>@Message</p>
+                </div>
+                <div class="modal-footer">
+                    @switch (DialogType)
+                    {
+                        case ModalDialogType.Ok:
+                            <button type="button" class="btn btn-primary" @onclick="@ModalConfirm">Ok</button>
+                            break;
+                        case ModalDialogType.RevokeDelete:
+                            <button type="button" class="btn btn-secondary" @onclick="@ModalCancel">Cancel</button>
+                            <button type="button" class="btn btn-danger" @onclick="@ModalConfirm">Revoke</button>
+                            break;
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+
+    [Parameter]
+    public string Title { get; set; } = "Confirmation";
+
+    [Parameter]
+    public string Message { get; set; } = "Are you sure?";
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public ModalDialogType DialogType { get; set; }
+
+    [Parameter]
+    public bool Show { get; set; }
+
+    private Task ModalCancel()
+    {
+        return OnClose.InvokeAsync(false);
+    }
+
+    private Task ModalConfirm()
+    {
+        return OnClose.InvokeAsync(true);
+    }
+
+}

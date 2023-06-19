@@ -6,16 +6,32 @@
         <UserSecretsId>8d14d57a-5ec9-430f-9b5a-8e40c3558bb2</UserSecretsId>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="DbUp.Reboot.SqlServer" Version="1.5.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+      <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+      <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+      <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+      <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+      <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="DeploymentScripts\InitialCreate.sql">
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="DeploymentScripts\InitialCreate.sql" />
+      <EmbeddedResource Include="DeploymentScripts\InitialCreate.sql">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 
