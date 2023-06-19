@@ -15,8 +15,7 @@ var host = Host.CreateDefaultBuilder(args).ConfigureServices((context, services)
         .Enrich.WithExceptionDetails()
         .Enrich.WithMachineName()
         .Enrich.WithProcessId()
-        .Enrich.WithThreadId()
-        .Enrich.WithProperty("LogicalServiceName", "IdentityServerConfig.Migrations");
+        .Enrich.WithThreadId();
 }).Build();
 
 await host.RunAsync();
