@@ -24,6 +24,7 @@
                         }
                         <a href="clients/@id" class="btn btn-link btn-sm" role="button">@token.ClientId</a>
                     </TemplateColumn>
+                    <PropertyColumn Property="c => configurationDbContext.Clients.Where(cl => cl.ClientId == c.ClientId).Select(cl => cl.ClientName).First()" Title="Client Name"></PropertyColumn>
                     <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"/>
                     <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"/>
                     <TemplateColumn Title="Status" Context="token" SortBy="sortStatus">
