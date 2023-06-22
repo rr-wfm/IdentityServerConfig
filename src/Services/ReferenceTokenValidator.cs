@@ -16,12 +16,6 @@ public class ReferenceTokenValidator : IReferenceTokenValidator
     
     public ReferenceTokenDataModel Validate(CheckReferenceTokenModel checkReferenceTokenModel)
     {
-        Dictionary<string, string> data = new()
-        {
-            { "ClientId", checkReferenceTokenModel.ClientId },
-            { "ReferenceToken", checkReferenceTokenModel.ReferenceToken }
-        };
-
         ReferenceTokenDataModel returnValue = new();
         
         //hash the token

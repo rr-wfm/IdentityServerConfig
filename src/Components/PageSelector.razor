@@ -15,10 +15,10 @@
     [Parameter]
     public PaginationState Pagination { get; set; }
 
-    private void OnItemsPerPageChanged(ChangeEventArgs e)
+    private async Task OnItemsPerPageChanged(ChangeEventArgs e)
     {
         Pagination.ItemsPerPage = int.Parse(e.Value.ToString());
-        Pagination.SetCurrentPageIndexAsync(0);
+        await Pagination.SetCurrentPageIndexAsync(0);
     }
 
 }
