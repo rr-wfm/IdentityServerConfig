@@ -18,13 +18,13 @@
         <div class="row">
             <div>
                 <QuickGrid Items="@persistedGrants" @ref="grid" class="table table-hover table-striped" Pagination="@_pagination">
-                    <TemplateColumn Title="Client Id"  Context="token" SortBy="@_sortClientId">
+                    <TemplateColumn Title="Client Id"  Context="token" SortBy="@_sortClientId" Class="w-25">
                         <a href="clients/@token.ClientTableId" class="btn btn-link btn-sm" role="button">@token.ClientId</a>
                     </TemplateColumn>
-                    <PropertyColumn Property="c => c.ClientName" Title="Client Name" Sortable="true"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"/>
-                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"/>
-                    <TemplateColumn Title="Status" Context="token" SortBy="_sortStatus">
+                    <PropertyColumn Property="c => c.ClientName" Title="Client Name" Sortable="true" Class="w-25"/>
+                    <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true" Class="w-15"/>
+                    <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true" Class="w-15"/>
+                    <TemplateColumn Title="Status" Context="token" SortBy="_sortStatus" Class="w-10">
                         @{
                             if (IsActive(token.Expiration))
                             {
@@ -36,7 +36,7 @@
                             }
                         }
                     </TemplateColumn>
-                    <TemplateColumn Context="token" Class="Revoke">
+                    <TemplateColumn Context="token" Class="w-10">
                         <AuthorizeView Policy="ReferenceTokenRevoke">
                             <Authorized>
                                 @{
