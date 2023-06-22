@@ -1,7 +1,8 @@
 ﻿@page "/clients/{ClientId:int}"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "ClientView")]
 @inject ConfigurationDbContext DbContext;
 
+<PageTitle>Client Details - IdentityServerConfig</PageTitle>
 @if (SelectedClient == null)
 {
     <p class="placeholder-glow">
@@ -67,7 +68,7 @@ else
                 </div>
             </TabPane>
             <TabPane TabId="secrets" TabIndex="1">
-                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table" Pagination="_paginationSecrets">
+                <QuickGrid Items="@SelectedClient.ClientSecrets.AsQueryable()" Class="table table-hover table-striped" Pagination="_paginationSecrets">
                     <PropertyColumn Property="@(s => s.Description)" />
                     <TemplateColumn Title="Type">
                         <ChildContent Context="secret">

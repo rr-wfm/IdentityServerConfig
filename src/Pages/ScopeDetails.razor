@@ -1,7 +1,8 @@
 ﻿@page "/scopes/{ApiScopeId:int}"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "ScopeView")]
 @inject ConfigurationDbContext DbContext;
 
+<PageTitle>Scope Details -IdentityServerConfig</PageTitle>
 @if (SelectedApiScope == null)
 {
     <p class="placeholder-glow">

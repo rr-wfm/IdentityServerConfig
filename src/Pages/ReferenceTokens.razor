@@ -8,6 +8,7 @@
 @inject IReferenceTokenValidator referenceTokenValidator
 @inject IReferenceTokenRevoker referenceTokenRevoker
 
+<PageTitle>Reference Tokens - IdentityServerConfig</PageTitle>
 <ul class="nav nav-tabs mb-3" id="referenceTokenTabs" role="tablist">
     <Tab TabId="general" Title="General" IsActive="true"/>
     <Tab TabId="check" Title="Check"/>
@@ -16,11 +17,14 @@
     <TabPane TabId="general" TabIndex="0" IsActive="true">
         <div class="row">
             <div>
-                <QuickGrid Items="@persistedGrants" @ref="grid" class="table table-hover table-striped" Pagination="@_pagination" >
-                    <PropertyColumn Property="c => c.ClientId" Title="Client Id" Sortable="true"/>
+                <QuickGrid Items="@persistedGrants" @ref="grid" class="table table-hover table-striped" Pagination="@_pagination">
+                    <TemplateColumn Title="Client Id"  Context="token" SortBy="@_sortClientId">
+                        <a href="clients/@token.ClientTableId" class="btn btn-link btn-sm" role="button">@token.ClientId</a>
+                    </TemplateColumn>
+                    <PropertyColumn Property="c => c.ClientName" Title="Client Name" Sortable="true"></PropertyColumn>
                     <PropertyColumn Property="c => c.CreationTime" Title="Creation Time (UTC)" Sortable="true"/>
                     <PropertyColumn Property="c => c.Expiration" Title="Expiration (UTC)" Sortable="true"/>
-                    <TemplateColumn Title="Status" Context="token">
+                    <TemplateColumn Title="Status" Context="token" SortBy="_sortStatus">
                         @{
                             if (IsActive(token.Expiration))
                             {
@@ -32,13 +36,13 @@
                             }
                         }
                     </TemplateColumn>
-                    <TemplateColumn Context="token"  Class="Revoke">
+                    <TemplateColumn Context="token" Class="Revoke">
                         <AuthorizeView Policy="ReferenceTokenRevoke">
                             <Authorized>
                                 @{
                                     if (IsActive(token.Expiration))
                                     {
-                                        <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => OpenRevokeDialog(token.Id, token.ClientId))">Revoke</button>
+                                        <button class="btn btn-sm btn-danger" role="button" @onclick="@(() => OpenRevokeDialog(token.PersistedGrantTableId, token.ClientId))">Revoke</button>
                                     }
                                 }
                             </Authorized>
@@ -67,7 +71,7 @@
                             <option value="" disabled selected>Select Client</option>
                             @foreach (var client in configurationDbContext.Clients)
                             {
-                                var clientName = client.ClientName ?? "No Name";
+                                var clientName = client.ClientName ?? "NULL";
                                 <option value="@client.ClientId">@client.ClientId - @clientName</option>
                             }
                         </select>
@@ -102,8 +106,11 @@
     private long _referenceTokenIdToRevoke;
     private string _clientIdToRevoke = string.Empty;
     private readonly PaginationState _pagination = new() {ItemsPerPage = 10};
-    private QuickGrid<PersistedGrant> grid;
-    private IQueryable<PersistedGrant> persistedGrants;
+    private QuickGrid<ReferenceTokenTableData> grid;
+    private IQueryable<ReferenceTokenTableData> persistedGrants;
+
+    readonly GridSort<ReferenceTokenTableData> _sortClientId = GridSort<ReferenceTokenTableData>.ByAscending(c => c.ClientId);
+    readonly GridSort<ReferenceTokenTableData> _sortStatus = GridSort<ReferenceTokenTableData>.ByAscending(c => c.Expiration);
 
     public static bool IsActive(DateTime? expirationDate)
     {
@@ -134,7 +141,20 @@
 
     protected override void OnInitialized()
     {
-        persistedGrants = persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token"));
+        var persistedGrantsTable = persistedGrantDbContext.PersistedGrants.Where(c => c.Type.Equals("reference_token")).ToList();
+        var clientsTable = configurationDbContext.Clients.ToList();
+
+        persistedGrants = (from pg in persistedGrantsTable
+            join c in clientsTable on pg.ClientId equals c.ClientId
+            select new ReferenceTokenTableData
+            {
+                PersistedGrantTableId = pg.Id,
+                ClientTableId = c.Id,
+                ClientId = pg.ClientId,
+                Expiration = pg.Expiration,
+                CreationTime = pg.CreationTime,
+                ClientName = c.ClientName ?? "NULL",
+            }).AsQueryable();
     }
 
 }
